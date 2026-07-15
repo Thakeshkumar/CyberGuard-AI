@@ -1,0 +1,18 @@
+# Day_5
+# TOPIC : Function
+# PROJECT : CyberGuard AI
+
+def url_scanner():
+    print("\n URL Scanner")
+    url= input("Enter URL :")
+    print("Scanning...",url)
+    print("Scan Completed ")
+
+print("============ CyberGuard AI ============")
+print(" 1. URL Scanner ")
+
+choice = int(input("choose option :"))
+if choice == 1:
+    url_scanner()
+else:
+    print("Invalid Option ")
