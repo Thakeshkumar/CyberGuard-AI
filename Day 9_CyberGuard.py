@@ -42,7 +42,7 @@ def password_analyzer(password):
     elif len(password) >= 8:
         print("password strength : MEDIUM")
 
-    else:
+    else:  
         print("password strength : WEAK")
 
     if upper == 0:
