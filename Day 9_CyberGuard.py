@@ -58,7 +58,9 @@ def password_analyzer(password):
             print("Add atleast 1 special character")
 
 # Function to scan URL and check its validity and domain reputation
-def url_scanner():
+def url_analyzer():
+     
+     score = 0
      
      url = input("Enter the URL to scan: ")
      # Placeholder for URL scanning logic
@@ -69,6 +71,72 @@ def url_scanner():
           print("The URL is invalid. Please enter a valid URL starting with http:// or https://")
 
      # check domain reputation (placeholder logic)
+     
+     if url.startswith("\n https://"):
+            print("HTTPS          : SAFE")
+     else:
+            print("HTTPS          : NOT SECURE")
+     score+= 20
+
+    # URL Length
+     if len(url) > 50:
+            print("URL Length     : SUSPICIOUS")
+     score+= 20
+        
+     print("URL Length     : NORMAL")
+
+    # @ Symbol
+     if "@" in url:
+            print("@ Symbol       : FOUND")
+     score+= 25
+
+    # IP Address Check
+     if "://" in url:
+            domain = url.split("://")[1].split("/")[0]
+     else:
+            domain = url.split("/")[0]
+
+     parts = domain.split(".")
+
+     ip = True
+
+     if len(parts) == 4:
+            for part in parts:
+                if not part.isdigit():
+                    ip = False
+                break
+     else:
+            ip = False
+
+     if ip:
+            print("IP Address     : YES")
+     score+= 20
+
+     print("IP Address     : NO")
+
+    # Suspicious Keywords
+     keywords = ["login", "verify", "update", "bank", "secure", "account"]
+
+     found = False
+
+     for word in keywords:
+            if word in url.lower():
+                print("Keyword Found  :", word)
+            score+= 15
+            found = True
+
+     if not found:
+            print("Keyword Found  : None")
+
+     print("\n==============================")
+     print("Threat Score :", score, "/100")
+
+     if score >= 60:
+            print("Verdict      : HIGH RISK")
+     elif score >= 30:
+            print("Verdict      : SUSPICIOUS")
+     else:
+            print("Verdict      : SAFE")
      
      if ".com" in url:
           print("🌍 Commercial Website (.com) Generally Safe" )
@@ -92,7 +160,7 @@ def scam_detector():
 while True:
     print("\nSelect an option:")
     print("1. Password Analyzer")
-    print("2. URL Scanner")
+    print("2. URL analyzer")
     print("3. Scam Detector")
     print("4. Exit")
 
@@ -102,7 +170,7 @@ while True:
         password = input("Enter Your Password :")
         password_analyzer(password)
     elif choice == '2':
-        url_scanner()
+        url_analyzer()
     elif choice == '3':
         scam_detector()
     elif choice == '4':
