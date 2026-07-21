@@ -9,6 +9,7 @@ print("=======================================")
 # Function to analyze password strength
 
 def password_analyzer(password):
+    print("\n=============== PASSWORD ANALYZER REPORT ===============")
     upper=0
     lower=0
     number=0
@@ -63,6 +64,7 @@ def url_analyzer():
      score = 0
      
      url = input("Enter the URL to scan: ")
+     print("\n=============== URL ANAYZER REPORT ===============")
      # Placeholder for URL scanning logic
 
      if url.startswith("http://") or url.startswith("https://"):
