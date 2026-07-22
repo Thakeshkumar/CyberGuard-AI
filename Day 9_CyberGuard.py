@@ -34,7 +34,6 @@ def password_analyzer(password):
     print("Lowercase :",lower)
     print("Number :",number)
     print("Special Character :",special)
-
     # password strength check
 
     if len(password) >= 8 and upper > 0 and lower > 0 and number > 0 and special >0:
@@ -45,6 +44,10 @@ def password_analyzer(password):
 
     else: 
         print("password strength : WEAK")
+
+        print("Password must be atleast 8 characters long")
+    
+
 
     if upper == 0:
             print("Add atleast 1 uppercase letter")
@@ -154,6 +157,62 @@ def url_analyzer():
 
      input("\n  Press Enter To Return To Main Menu ...")
 
+def email_analyzer():
+      email = input("Enter the email address to analyze: ")
+      print("\n=============== EMAIL ANALYZER REPORT ===============")
+    
+    # Check if the email address is valid
+      if "@" not in email or "." not in email:
+        print("Invalid email address ")
+        return
+      
+    # Split the email address into username and domain  
+      username,domain = email.split("@")
+      print("Username:",username)
+      print("Domain:",domain)
+
+    #personal email decection
+      personal_domains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"]
+      if domain in personal_domains:   
+        print("Email type: Personal Email")
+
+      else:
+        print("Email type: Business Email")
+
+
+   
+    #email format validation
+      if domain.endswith(".com"):
+           print("Commercial Domain")
+
+      elif domain.endswith(".org"):
+           print("Organization Domain")
+
+      elif domain.endswith(".net"):
+              print("Network Domain")
+
+      elif domain.endswith(".edu"):
+              print("Educational Domain")
+
+      elif domain.endswith(".gov"):
+              print("Government Domain")
+
+      print("\n======================================")
+      print("\n Basic Email Format looks valid")
+    
+    #Adding risk score based on email type
+      score= 0
+
+      if domain in personal_domains:
+        score -= 50
+
+      if len (username) < 3:
+        score -= 20
+
+      print("Security score:",score ,"/100")
+
+      input("\n press enter to return to main menu ...")
+
 
 def scam_detector():
      print("\n Scam Detector is under development. Please check back later for updates.")
@@ -163,8 +222,9 @@ while True:
     print("\nSelect an option:")
     print("1. Password Analyzer")
     print("2. URL analyzer")
-    print("3. Scam Detector")
-    print("4. Exit")
+    print("3. Email Analyzer")
+    print("4. Scam Detector")
+    print("5. Exit")
 
     choice = input("Enter your choice (1-4): ")
 
@@ -174,8 +234,10 @@ while True:
     elif choice == '2':
         url_analyzer()
     elif choice == '3':
-        scam_detector()
+        email_analyzer()
     elif choice == '4':
+        scam_detector()
+    elif choice == '5':
         print("Thank you for using CyberGuard AI. Goodbye!")
         print("=======================================")
         break
