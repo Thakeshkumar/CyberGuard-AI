@@ -213,9 +213,64 @@ def email_analyzer():
 
       input("\n press enter to return to main menu ...")
 
-
+    # Function to detect scams based on user input
 def scam_detector():
-     print("\n Scam Detector is under development. Please check back later for updates.")
+
+    print("\n=============== SCAM DETECTOR REPORT ===============")
+    print("                 CYBERGUARD - AI ")
+    print("                     SCAM DETECTOR ")
+    print("  ====================================================")
+
+    message = input("Enter the message to analyze: \n").lower()
+
+    score = 0
+
+    scam_words = ["lottery", "prize", "winner", "urgent", 
+                  "limited time", "click here", "free", 
+                  "offer", "risk-free","guaranteed", "exclusive",
+                    "act now", "money back", "no obligation", "instant access",
+                 "special promotion","otp", "bank account", "password",
+                 "social security number", "credit card", "personal information","urgent","click",
+                 "verify", "update", "account", "login", "password reset",
+                  "suspicious link", "malware", "phishing", "scam alert",
+                  "fake website", "identity theft", "financial scam",
+                  "investment opportunity", "get rich quick", "work from home",
+                  "unclaimed funds", "inheritance", "charity scam",
+                  "tech support scam", "prize claim", "lottery winner",
+                  "urgent response required", "limited time offer",
+                  "exclusive deal", "risk-free trial", "guaranteed results",
+                  "act now to secure your spot"]
+
+    print("\n Checking message...")
+    detector = []
+
+    for word in scam_words:
+        if word in message:
+            detector.append(word)
+            score += 5
+
+        if "https://" in message or "http://" in message:
+            score += 5
+        if "@" in message:
+            score += 5
+        print("Detected keywords:", detector)
+
+        if len(detector) == 0:
+            print("None")
+        else:
+             for item in detector:
+                print("-", item)
+        print()
+    print("Threat Score:", score, "/100")
+
+    if score >= 40:
+            print("Verdict: HIGH RISK ")
+    elif score >= 20:
+            print("Verdict: SUSPICIOUS")
+    else:
+            print("Verdict: LOOKS SAFE")
+
+    print("\n======================================")   
 
 # menu for the user to select the desired functionality
 while True:
