@@ -77,23 +77,24 @@ def url_analyzer():
 
      # check domain reputation (placeholder logic)
      
-     if url.startswith("\n https://"):
-            print("HTTPS          : SAFE")
-     else:
-            print("HTTPS          : NOT SECURE")
-     score+= 20
+     if url.startswith("https://"):
+        print("HTTPS          : SAFE")
+
+     elif url.startswith("http://"):
+        print("HTTPS        : NOT SECURE")
+        score += 20
 
     # URL Length
      if len(url) > 50:
-            print("URL Length     : SUSPICIOUS")
-     score+= 20
-        
-     print("URL Length     : NORMAL")
+        print("URL Length     : SUSPICIOUS")
+        score+= 20
+     else:
+        print("URL Length     : NORMAL")
 
     # @ Symbol
      if "@" in url:
-            print("@ Symbol       : FOUND")
-     score+= 25
+        print("@ Symbol       : FOUND")
+        score+= 25
 
     # IP Address Check
      if "://" in url:
@@ -114,10 +115,10 @@ def url_analyzer():
             ip = False
 
      if ip:
-            print("IP Address     : YES")
-     score+= 20
-
-     print("IP Address     : NO")
+      print("IP Address     : YES")
+      score+= 20
+     else:
+       print("IP Address     : NO")
 
     # Suspicious Keywords
      keywords = ["login", "verify", "update", "bank", "secure", "account"]
@@ -125,23 +126,23 @@ def url_analyzer():
      found = False
 
      for word in keywords:
-            if word in url.lower():
-                print("Keyword Found  :", word)
+        if word in url.lower():
+            print("Keyword Found  :", word)
             score+= 15
             found = True
 
      if not found:
-            print("Keyword Found  : None")
+        print("Keyword Found  : None")
 
      print("\n==============================")
-     print("Threat Score :", score, "/100")
+     print("\n Threat Score :", score, "/100")
 
-     if score >= 60:
+     if score <= 20:
+            print("Verdict      : LOW RISK")
+     elif score <= 50:
+            print("Verdict      : MEDIUM RISK")
+     else:  
             print("Verdict      : HIGH RISK")
-     elif score >= 30:
-            print("Verdict      : SUSPICIOUS")
-     else:
-            print("Verdict      : SAFE")
      
      if ".com" in url:
           print("🌍 Commercial Website (.com) Generally Safe" )
@@ -218,7 +219,7 @@ def scam_detector():
 
     print("\n=============== SCAM DETECTOR REPORT ===============")
     print("                 CYBERGUARD - AI ")
-    print("                     SCAM DETECTOR ")
+    print("                  SCAM DETECTOR ")
     print("  ====================================================")
 
     message = input("Enter the message to analyze: \n").lower()
@@ -275,13 +276,14 @@ def scam_detector():
 # menu for the user to select the desired functionality
 while True:
     print("\nSelect an option:")
-    print("1. Password Analyzer")
-    print("2. URL analyzer")
-    print("3. Email Analyzer")
-    print("4. Scam Detector")
-    print("5. Exit")
-
-    choice = input("Enter your choice (1-4): ")
+    print("=======================================")
+    print("     1. Password Analyzer")
+    print("     2. URL analyzer")
+    print("     3. Email Analyzer")
+    print("     4. Scam Detector")
+    print("     5. Exit")
+    print("=======================================")
+    choice = input("Enter your choice (1-5): ")
 
     if choice == '1':
         password = input("Enter Your Password :")
