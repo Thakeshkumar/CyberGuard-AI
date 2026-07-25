@@ -218,12 +218,12 @@ def email_analyzer():
 def scam_detector():
 
     print("\n=============== SCAM DETECTOR REPORT ===============")
-    print("                 CYBERGUARD - AI ")
-    print("                  SCAM DETECTOR ")
-    print("  ====================================================")
+    print("----           CYBERGUARD - AI       ----")
+    print("     ----       SCAM DETECTOR      ----    ")
+    print("="*55)
 
     message = input("Enter the message to analyze: \n").lower()
-
+    
     score = 0
 
     scam_words = ["lottery", "prize", "winner", "urgent", 
@@ -243,46 +243,72 @@ def scam_detector():
                   "act now to secure your spot"]
 
     print("\n Checking message...")
-    detector = []
 
-    for word in scam_words:
-        if word in message:
-            detector.append(word)
-            score += 5
+    reasons = []
+
+    for word in scam_words  :
+        if word in message.lower():
+            print("Keyword Found :", word)
+            score += 10
+            reasons.append(f"Suspicious keyword detected : {word}")
 
         if "https://" in message or "http://" in message:
-            score += 5
+            score += 10
         if "@" in message:
-            score += 5
-        print("Detected keywords:", detector)
+            score += 10
+        if "!" in message:
+            score += 10
 
-        if len(detector) == 0:
-            print("None")
-        else:
-             for item in detector:
-                print("-", item)
-        print()
+    print("\n======================================")
+    print("     SCAM DETECTOR REPORT        ")
+    print("========================================")
+
     print("Threat Score:", score, "/100")
 
-    if score >= 40:
-            print("Verdict: HIGH RISK ")
-    elif score >= 20:
-            print("Verdict: SUSPICIOUS")
-    else:
-            print("Verdict: LOOKS SAFE")
+    if score <= 20:
+        print("RISK LEVEL: LOW RISK")
+        print("Status    : Message lools mostely safe")
 
-    print("\n======================================")   
+    elif score <= 50:
+        print("RISK LEVEL: MEDIUM RISK")
+        print("Status    : Be careful before taking action")
+
+    else:
+        print("RISK LEVEL: HIGH RISK")
+        print("Status    : Possible scam message")
+
+    
+    # key detection 
+    if word == "otp":
+        reasons.append("OTP request detected")
+    elif word == "verify":
+        reasons.append("Verification request found")
+    elif word == "click":
+        reasons.append("Suspicious click instruction")
+    elif word == "account":
+        reasons.append("Account related message")
+    elif word == "bank":
+        reasons.append("Bank related content")
+
+    print("\n reasons :")
+
+    if len(reasons) == 0:
+        print("No suspicious reasons found.")
+    else:
+        for reason in reasons:
+            print("-", reason)
+    print("\n==============================================")   
 
 # menu for the user to select the desired functionality
 while True:
     print("\nSelect an option:")
-    print("=======================================")
+    print("="*50)
     print("     1. Password Analyzer")
     print("     2. URL analyzer")
     print("     3. Email Analyzer")
     print("     4. Scam Detector")
     print("     5. Exit")
-    print("=======================================")
+    print("===============================================")
     choice = input("Enter your choice (1-5): ")
 
     if choice == '1':
@@ -296,7 +322,7 @@ while True:
         scam_detector()
     elif choice == '5':
         print("Thank you for using CyberGuard AI. Goodbye!")
-        print("=======================================")
+        print("===========================================")
         break
     else:
         print("Invalid choice. Please try again.")
