@@ -6,9 +6,13 @@ print("=======================================")
 print("          CyberGuard AI           ")
 print("=======================================")
 
-# Function to analyze password strength
 
+# Function to analyze password strength
+password_result = "Not Checked"
 def password_analyzer(password):
+    global password_result
+    global password_score
+
     print("\n=============== PASSWORD ANALYZER REPORT ===============")
     upper=0
     lower=0
@@ -38,12 +42,18 @@ def password_analyzer(password):
 
     if len(password) >= 8 and upper > 0 and lower > 0 and number > 0 and special >0:
         print("password strength : STRONG")
+        password_result = "STRONG"
+        password_score = 25
 
     elif len(password) >= 8:
         print("password strength : MEDIUM")
+        password_result = "MEDIUM"
+        password_score = 15
 
     else: 
         print("password strength : WEAK")
+        password_result = "WEAK"
+        password_result = 5
 
         print("Password must be atleast 8 characters long")
     
@@ -62,8 +72,12 @@ def password_analyzer(password):
             print("Add atleast 1 special character")
 
 # Function to scan URL and check its validity and domain reputation
+
+url_result = "Not Checked"
 def url_analyzer():
      
+     global url_result
+     global url_score
      score = 0
      
      url = input("Enter the URL to scan: ")
@@ -139,10 +153,18 @@ def url_analyzer():
 
      if score <= 20:
             print("Verdict      : LOW RISK")
+            url_result = "SAFE"
+            url_score = 25
+
      elif score <= 50:
             print("Verdict      : MEDIUM RISK")
+            url_result = "SUSPICIOUS"
+            url_score = 15
+
      else:  
             print("Verdict      : HIGH RISK")
+            url_result = "DANGEROUS"
+            url_score = 5
      
      if ".com" in url:
           print("🌍 Commercial Website (.com) Generally Safe" )
@@ -158,7 +180,11 @@ def url_analyzer():
 
      input("\n  Press Enter To Return To Main Menu ...")
 
+email_result = "Not Checked"
 def email_analyzer():
+      global email_result
+      global email_score
+
       email = input("Enter the email address to analyze: ")
       print("\n=============== EMAIL ANALYZER REPORT ===============")
     
@@ -215,7 +241,12 @@ def email_analyzer():
       input("\n press enter to return to main menu ...")
 
     # Function to detect scams based on user input
+
+scam_result = "Not Checked"
 def scam_detector():
+
+    global scam_result
+    global scam_score
 
     print("\n=============== SCAM DETECTOR REPORT ===============")
     print("----           CYBERGUARD - AI       ----")
@@ -268,15 +299,20 @@ def scam_detector():
     if score <= 20:
         print("RISK LEVEL: LOW RISK")
         print("Status    : Message lools mostely safe")
+        scam_result = "LOW RISK"
+        scam_score = 25
 
     elif score <= 50:
         print("RISK LEVEL: MEDIUM RISK")
         print("Status    : Be careful before taking action")
+        scam_result = "MEDIUM RISK"
+        scam_score = 15
 
     else:
         print("RISK LEVEL: HIGH RISK")
         print("Status    : Possible scam message")
-
+        scam_result = "HIGH RISK"
+        scam_score = 5
     
     # key detection 
     if word == "otp":
@@ -299,6 +335,37 @@ def scam_detector():
             print("-", reason)
     print("\n==============================================")   
 
+def security_report():
+
+     print("\n")
+     print("="*55)
+     print("        CYBERGUARD-AI SECURITY REPORT       ")
+     print("="*55)
+
+     
+     print(f"passsword analysis:{password_result}")
+     print(f"URl analysis:{url_result}")
+     print(f"Email analysis:{email_result}")
+     print(f"scam detector:{scam_result}")
+
+     print("="*55)
+
+     total_score = (password_score + url_score + email_score + scam_score)
+
+     if total_score >= 90:
+         level = "EXCELLENT"
+     elif total_score >= 70:
+          level = "GOOD"
+     elif total_score >= 50:
+          level = "AVERAGE"
+     else:
+          level = "POOR"
+
+     print("-"*55)
+     print("Over all security score:",total_score,"/100")
+     print("Security level :",level)
+     print("-"*55)
+
 # menu for the user to select the desired functionality
 while True:
     print("\nSelect an option:")
@@ -307,9 +374,10 @@ while True:
     print("     2. URL analyzer")
     print("     3. Email Analyzer")
     print("     4. Scam Detector")
-    print("     5. Exit")
+    print("     5.Security report")
+    print("     6. Exit")
     print("===============================================")
-    choice = input("Enter your choice (1-5): ")
+    choice = input("Enter your choice (1-6): ")
 
     if choice == '1':
         password = input("Enter Your Password :")
@@ -321,6 +389,8 @@ while True:
     elif choice == '4':
         scam_detector()
     elif choice == '5':
+        security_report() 
+    elif choice == '6':
         print("Thank you for using CyberGuard AI. Goodbye!")
         print("===========================================")
         break
