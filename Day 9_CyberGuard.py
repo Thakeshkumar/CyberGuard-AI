@@ -13,6 +13,8 @@ def password_analyzer(password):
     global password_result
     global password_score
 
+    score = 0
+
     print("\n=============== PASSWORD ANALYZER REPORT ===============")
     upper=0
     lower=0
@@ -57,7 +59,10 @@ def password_analyzer(password):
 
         print("Password must be atleast 8 characters long")
     
-
+    if password_result == "STRONG":
+     score += 25
+    elif password_result == "MEDIUM":
+     score += 15
 
     if upper == 0:
             print("Add atleast 1 uppercase letter")
@@ -70,6 +75,17 @@ def password_analyzer(password):
 
     if special == 0:
             print("Add atleast 1 special character")
+
+    if password_result == "WEAK":
+        print("- Use at least 8 characters.")
+        print("- Include uppercase, lowercase, numbers and special characters.")
+
+    elif password_result == "MEDIUM":
+        print("- Add more special characters.")
+        print("- Increase password complexity.")
+
+    else:
+        print("- Password is secure.")
 
 # Function to scan URL and check its validity and domain reputation
 
@@ -165,6 +181,9 @@ def url_analyzer():
             print("Verdict      : HIGH RISK")
             url_result = "DANGEROUS"
             url_score = 5
+
+     if url_result == "SAFE":
+      score += 25
      
      if ".com" in url:
           print("🌍 Commercial Website (.com) Generally Safe" )
@@ -178,7 +197,13 @@ def url_analyzer():
      else:
           print("Unknown Domain")
 
-     input("\n  Press Enter To Return To Main Menu ...")
+     if url_result != "SAFE":
+         print("- Avoid opening suspicious websites.")
+         print("- Always verify HTTPS and domain name.")
+
+     else:
+        print("- URL looks safe.")
+        input("\n  Press Enter To Return To Main Menu ...")
 
 email_result = "Not Checked"
 def email_analyzer():
@@ -206,8 +231,6 @@ def email_analyzer():
       else:
         print("Email type: Business Email")
 
-
-   
     #email format validation
       if domain.endswith(".com"):
            print("Commercial Domain")
@@ -226,7 +249,13 @@ def email_analyzer():
 
       print("\n======================================")
       print("\n Basic Email Format looks valid")
-    
+
+      if email_result == "SAFE":
+       score += 25
+       email_score = 25
+      else:
+          email_score = 5
+
     #Adding risk score based on email type
       score= 0
 
@@ -238,7 +267,14 @@ def email_analyzer():
 
       print("Security score:",score ,"/100")
 
-      input("\n press enter to return to main menu ...")
+      if email_result != "SAFE":
+        print("- Verify sender email before replying.")
+        print("- Do not open unknown attachments.")
+
+      else:
+        print("- Email appears safe.")
+
+        input("\n press enter to return to main menu ...")
 
     # Function to detect scams based on user input
 
@@ -327,6 +363,17 @@ def scam_detector():
         reasons.append("Bank related content")
 
     print("\n reasons :")
+ 
+    if scam_result == "SAFE":
+     score += 25
+
+    if scam_result != "SAFE":
+        print("- Do not click unknown links.")
+        print("- Never share OTP or passwords.")
+        print("- Verify messages from official sources.")
+
+    else:
+        print("- No scam indicators detected.")
 
     if len(reasons) == 0:
         print("No suspicious reasons found.")
@@ -336,6 +383,7 @@ def scam_detector():
     print("\n==============================================")   
 
 def security_report():
+     score = 0
 
      print("\n")
      print("="*55)
@@ -344,9 +392,9 @@ def security_report():
 
      
      print(f"passsword analysis:{password_result}")
-     print(f"URl analysis:{url_result}")
-     print(f"Email analysis:{email_result}")
-     print(f"scam detector:{scam_result}")
+     print(f"URl analysis      :{url_result}")
+     print(f"Email analysis    :{email_result}")
+     print(f"scam detector     :{scam_result}")
 
      print("="*55)
 
@@ -360,11 +408,30 @@ def security_report():
           level = "AVERAGE"
      else:
           level = "POOR"
+ 
+     if scam_result == "SAFE":
+      score += 25
+
+     if score >= 80:
+        print("Security Level : EXCELLENT")
+
+     elif score >= 60:
+        print("Security Level : GOOD")
+
+     elif score >= 40:
+        print("Security Level : AVERAGE")
+
+     else:
+         print("Security Level : DANGER")
 
      print("-"*55)
      print("Over all security score:",total_score,"/100")
-     print("Security level :",level)
+     print("Security level         :",level)
      print("-"*55)
+
+     print("\n==============================")
+     print("   AI SECURITY RECOMMENDATIONS ")
+     print("================================")
 
 # menu for the user to select the desired functionality
 while True:
