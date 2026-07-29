@@ -6,12 +6,18 @@ print("=======================================")
 print("          CyberGuard AI           ")
 print("=======================================")
 
+from datetime import datetime
 
 # Function to analyze password strength
 password_result = "Not Checked"
+password_score = 0
+
+password_done = False
+
 def password_analyzer(password):
     global password_result
     global password_score
+    global password_done
 
     score = 0
 
@@ -75,25 +81,18 @@ def password_analyzer(password):
 
     if special == 0:
             print("Add atleast 1 special character")
-
-    if password_result == "WEAK":
-        print("- Use at least 8 characters.")
-        print("- Include uppercase, lowercase, numbers and special characters.")
-
-    elif password_result == "MEDIUM":
-        print("- Add more special characters.")
-        print("- Increase password complexity.")
-
-    else:
-        print("- Password is secure.")
+    password_done = True
 
 # Function to scan URL and check its validity and domain reputation
 
 url_result = "Not Checked"
+url_score = 0
+url_done = False
 def url_analyzer():
      
      global url_result
      global url_score
+     global url_done
      score = 0
      
      url = input("Enter the URL to scan: ")
@@ -196,19 +195,17 @@ def url_analyzer():
 
      else:
           print("Unknown Domain")
+     url_done = True
 
-     if url_result != "SAFE":
-         print("- Avoid opening suspicious websites.")
-         print("- Always verify HTTPS and domain name.")
-
-     else:
-        print("- URL looks safe.")
-        input("\n  Press Enter To Return To Main Menu ...")
 
 email_result = "Not Checked"
+email_score = 0
+email_done = False
+
 def email_analyzer():
       global email_result
       global email_score
+      global email_done
 
       email = input("Enter the email address to analyze: ")
       print("\n=============== EMAIL ANALYZER REPORT ===============")
@@ -266,23 +263,21 @@ def email_analyzer():
         score -= 20
 
       print("Security score:",score ,"/100")
+      email_done = True
 
-      if email_result != "SAFE":
-        print("- Verify sender email before replying.")
-        print("- Do not open unknown attachments.")
-
-      else:
-        print("- Email appears safe.")
-
-        input("\n press enter to return to main menu ...")
+      input("\n press enter to return to main menu ...")
 
     # Function to detect scams based on user input
 
 scam_result = "Not Checked"
+scam_score = 0
+scam_done = False
+
 def scam_detector():
 
     global scam_result
     global scam_score
+    global scam_done
 
     print("\n=============== SCAM DETECTOR REPORT ===============")
     print("----           CYBERGUARD - AI       ----")
@@ -364,25 +359,16 @@ def scam_detector():
 
     print("\n reasons :")
  
-    if scam_result == "SAFE":
-     score += 25
-
-    if scam_result != "SAFE":
-        print("- Do not click unknown links.")
-        print("- Never share OTP or passwords.")
-        print("- Verify messages from official sources.")
-
-    else:
-        print("- No scam indicators detected.")
-
     if len(reasons) == 0:
         print("No suspicious reasons found.")
     else:
         for reason in reasons:
             print("-", reason)
     print("\n==============================================")   
+    scam_done = True
 
 def security_report():
+     current_time = datetime.now()
      score = 0
 
      print("\n")
@@ -390,8 +376,14 @@ def security_report():
      print("        CYBERGUARD-AI SECURITY REPORT       ")
      print("="*55)
 
+     date = current_time.strftime("%d-%m-%Y")
+     time = current_time.strftime("%I:%M:%S %p")
+
+     print("\nDATE    :",date) 
+     print("TIME    :",time)
+
      
-     print(f"passsword analysis:{password_result}")
+     print(f"\npasssword analysis:{password_result}")
      print(f"URl analysis      :{url_result}")
      print(f"Email analysis    :{email_result}")
      print(f"scam detector     :{scam_result}")
@@ -420,18 +412,115 @@ def security_report():
 
      elif score >= 40:
         print("Security Level : AVERAGE")
-
      else:
-         print("Security Level : DANGER")
+        print("security level : CRITICAL ")
+           
 
      print("-"*55)
      print("Over all security score:",total_score,"/100")
      print("Security level         :",level)
      print("-"*55)
 
-     print("\n==============================")
-     print("   AI SECURITY RECOMMENDATIONS ")
-     print("================================")
+    # scan summary 
+     print("\n=========== SCAN SUMMARY ========")
+
+     print(password_result)
+     print(url_result)
+     print(email_result)
+     print(scam_result)
+
+     completed = 0
+
+     if password_done:
+        completed += 1
+     if url_done:
+        completed += 1
+     if email_done:
+        completed += 1
+     if scam_done:
+        completed += 1
+
+     print(f"\n Completed scans :{completed}/4")
+
+     if completed == 4:
+         print("Status : Full security scan completed")
+     elif completed >=2:
+         print("Status : Partical security scan")
+     else:
+         print("Status : Scan more modules")
+
+    # create AI Security recommendations 
+     print("\n======== AI SECURITY RECOMMENDATIONS ======== ")
+
+     if completed != 4:
+         print("\n- Run all modules for accurate security analysis...!")
+
+     # AI Recommendations
+
+     if password_result == "WEAK":
+        print("- Improve your password strength.")
+        print("- Use a password with at least 8 characters.")
+        print("- Include uppercase, lowercase, numbers and symbols.")
+        
+     elif password_result == "MEDIUM":
+        print("- Add more special characters to strengthen your password.")
+
+     else:
+        print("- Password security is good.")
+
+     print()
+
+     if url_result == "HIGH RISK":
+        print("- Do not open suspicious websites.")
+     elif url_result == "SAFE":
+        print("- URL looks safe.")
+     else:
+        print("- URL analysis has not been performed.")
+
+     print()
+
+     if email_result == "SUSPICIOUS":
+        print("- Verify the sender before clicking links.")
+     elif email_result == "SAFE":
+        print("- Email appears safe.")
+     else:
+        print("- Email analysis has not been performed.")
+
+     print()
+
+     if scam_result == "SCAM":
+        print("- Possible scam detected. Avoid sharing OTP or bank details.")
+     elif scam_result == "SAFE":
+        print("- No scam indicators detected.")
+     else:
+        print("- Scam detector has not been used.")
+
+     print("\n============= FINAL AI VERDICT =============")
+
+     if total_score >= 90:
+        print("\nYour device appears to be highly secure.")
+
+     elif total_score >= 70:
+        print("Your device is secure, but minor improvements are recommended.")
+
+     elif total_score >= 50:
+        print("Your device has moderate security risks.")
+
+     else:
+        print("Warning! Your device may be vulnerable to cyber threats.")
+
+     if completed == 4:
+        print("\nAll security modules have been analyzed successfully.")
+
+     else:
+        print(f"Only {completed}/4 modules were analyzed.")
+        print("Run the remaining modules for a complete security report.")
+
+     print("\n" + "=" * 60)
+     print("        Thank you for using CyberGuard AI")
+     print("                Stay Safe. Stay Secure.")
+     print("=" * 60)
+
 
 # menu for the user to select the desired functionality
 while True:
