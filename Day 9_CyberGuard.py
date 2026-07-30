@@ -518,9 +518,121 @@ def security_report():
 
      print("\n" + "=" * 60)
      print("        Thank you for using CyberGuard AI")
-     print("                Stay Safe. Stay Secure.")
+     print("             Stay Safe. Stay Secure.")
      print("=" * 60)
 
+# create export report 
+def export_report():
+    global password_result
+    global url_result
+    global email_result
+    global scam_result
+
+    global password_score
+    global url_score
+    global email_score
+    global scam_score
+
+    if (password_result == "Not Checked" and url_result == "Not Checked"
+    and email_result == "Not Checked" and scam_result == "Not Checked"):
+
+        print("\n - No analysis found.")
+        print(" - Please run at least one analyzer before exporting the report.")
+        return
+
+    total_score = password_score + url_score + email_score + scam_score
+
+    from datetime import datetime
+
+    current_time = datetime.now()
+
+    date = current_time.strftime("%d-%m-%Y")
+    time = current_time.strftime("%I:%M:%S %p")
+
+    file = open("CyberGuard_Report.txt", "a")
+
+    file.write("\n"+"="*40 + "\n")
+    file.write("CYBERGUARD AI SECURITY REPORT\n")
+    file.write("="*40 + "\n")
+
+    file.write(f"Date : {date}\n")
+    file.write(f"Time : {time}\n\n")
+
+    file.write(f"Password Analysis : {password_result}\n")
+    file.write(f"URL Analysis      : {url_result}\n")
+    file.write(f"Email Analysis    : {email_result}\n")
+    file.write(f"Scam Detector     : {scam_result}\n\n")
+    file.write(f"Overall Score : {total_score}/100\n")
+
+    if total_score >= 90:
+        level = "EXCELLENT"
+    elif total_score >= 70:
+        level = "GOOD"
+    elif total_score >= 50:
+        level = "AVERAGE"
+    else:
+        level = "POOR"
+
+    file.write(f"Security Level : {level}\n")
+
+    file.write("\n"and"=" * 55 + "\n")
+    file.write("        AI SECURITY RECOMMENDATIONS\n")
+    file.write("=" * 55 + "\n\n")
+
+    # password recommendation
+    if password_result == "WEAK":
+        file.write("- Use a stronger password.\n")
+        file.write("- Include uppercase, lowercase, numbers and symbols.\n\n")
+
+    elif password_result == "MEDIUM":
+        file.write("- Add special characters for better security.\n\n")
+
+    else:
+        file.write("- Password strength is good.\n\n")
+
+    # url recommendation
+    if url_result == "HIGH RISK":
+        file.write("- Avoid suspicious websites.\n\n")
+
+    elif url_result == "SAFE":
+        file.write("- URL appears safe.\n\n")
+
+    # email recommendation
+    if email_result == "SUSPICIOUS":
+        file.write("- Verify sender before opening attachments.\n\n")
+
+    elif email_result == "SAFE":
+        file.write("- Email appears safe.\n\n")
+
+    # scam recommendation
+    if scam_result == "SCAM":
+        file.write("- Never share OTP, passwords or banking details.\n\n")
+
+    elif scam_result == "SAFE":
+        file.write("- No scam indicators detected.\n\n")
+
+    file.write("=" * 40 + "\n")
+    file.write("        FINAL AI VERDICT\n")
+    file.write("=" * 40 + "\n")
+
+    if total_score >= 90:
+        file.write("---Your device appears highly secure---\n")
+
+    elif total_score >= 70:
+        file.write("---Your device is secure with minor improvements recommended---\n")
+
+    elif total_score >= 50:
+        file.write("---Your device has moderate security risks---\n")
+
+    else:
+        file.write("---Warning! Your device may be vulnerable to cyber threats---\n")
+    file.write("=" * 60 + "\n\n")
+
+    file.close()
+    print("\n"+"="*55)
+    print("         Report Exported Successfully!")
+    print("         File : CyberGuard_Report.txt")
+    print("="*55)
 
 # menu for the user to select the desired functionality
 while True:
@@ -530,8 +642,9 @@ while True:
     print("     2. URL analyzer")
     print("     3. Email Analyzer")
     print("     4. Scam Detector")
-    print("     5.Security report")
-    print("     6. Exit")
+    print("     5. Security report")
+    print("     6. Export report")
+    print("     7. Exit")
     print("===============================================")
     choice = input("Enter your choice (1-6): ")
 
@@ -547,9 +660,10 @@ while True:
     elif choice == '5':
         security_report() 
     elif choice == '6':
+        export_report()
+    elif choice == '7':
         print("Thank you for using CyberGuard AI. Goodbye!")
         print("===========================================")
         break
     else:
         print("Invalid choice. Please try again.")
-
