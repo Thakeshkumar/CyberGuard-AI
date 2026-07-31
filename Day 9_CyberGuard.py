@@ -210,11 +210,7 @@ def email_analyzer():
       email = input("Enter the email address to analyze: ")
       print("\n=============== EMAIL ANALYZER REPORT ===============")
     
-    # Check if the email address is valid
-      if "@" not in email or "." not in email:
-        print("Invalid email address ")
-        return
-      
+   
     # Split the email address into username and domain  
       username,domain = email.split("@")
       print("Username:",username)
@@ -246,23 +242,24 @@ def email_analyzer():
 
       print("\n======================================")
       print("\n Basic Email Format looks valid")
-
-      if email_result == "SAFE":
-       score += 25
-       email_score = 25
-      else:
-          email_score = 5
-
+      
     #Adding risk score based on email type
-      score= 0
+      risk_score = 0
 
       if domain in personal_domains:
-        score -= 50
+        risk_score += 50
+      if len(username) < 3:
+        risk_score += 20
+        
+      print("Security score :", risk_score, "/100")
 
-      if len (username) < 3:
-        score -= 20
-
-      print("Security score:",score ,"/100")
+      if "@" in email and "." in email:
+        email_result = "VALID"
+        email_score = 25
+      else:
+        email_result = "INVALID"
+        email_score = 0
+        
       email_done = True
 
       input("\n press enter to return to main menu ...")
@@ -521,6 +518,7 @@ def security_report():
      print("             Stay Safe. Stay Secure.")
      print("=" * 60)
 
+
 # create export report 
 def export_report():
     global password_result
@@ -634,6 +632,62 @@ def export_report():
     print("         File : CyberGuard_Report.txt")
     print("="*55)
 
+def dashboard ():
+
+    print("\n")
+    print("=" * 50)
+    print("        CYBERGUARD AI DASHBOARD")
+    print("=" * 50)
+
+    def status_icon(status):
+     if status in ["STRONG", "SAFE", "VALID", "LOW RISK"]:
+        return "✅"
+     elif status == "Not Checked":
+        return "⚪"
+     else:
+        return "⚠️"
+
+    print(f"Password Status : {status_icon(password_result)} {password_result}")
+    print(f"URL Status      : {status_icon(url_result)} {url_result}")
+    print(f"Email Status    : {status_icon(email_result)} {email_result}")
+    print(f"Scam Status     : {status_icon(scam_result)} {scam_result}")
+
+    print("-" * 50)
+
+    total_score = password_score + url_score + email_score + scam_score
+
+    if total_score >= 90:
+        level = "EXCELLENT"
+    elif total_score >= 70:
+        level = "GOOD"
+    elif total_score >= 50:
+        level = "AVERAGE"
+    else:
+        level = "POOR"
+
+    print(f"Overall Score   : {total_score}/100")
+    print(f"Security Level  : {level}")
+    print("-"*50)
+
+    from datetime import datetime
+
+    current_time = datetime.now()
+
+    completed = 0
+
+    if password_result != "Not Checked":
+        completed += 1
+    if url_result != "Not Checked":
+        completed += 1
+    if email_result != "Not Checked":
+        completed += 1
+    if scam_result != "Not Checked":
+        completed += 1
+
+    print(f"Completed Scans : {completed}/4")
+    print(f"Last Scan       : {current_time.strftime('%d-%m-%Y %I:%M %p')}")
+    print("-"*50)
+
 # menu for the user to select the desired functionality
 while True:
     print("\nSelect an option:")
@@ -643,10 +697,11 @@ while True:
     print("     3. Email Analyzer")
     print("     4. Scam Detector")
     print("     5. Security report")
-    print("     6. Export report")
-    print("     7. Exit")
+    print("     6. Dashboard")
+    print("     7. Export report")
+    print("     8. Exit")
     print("===============================================")
-    choice = input("Enter your choice (1-6): ")
+    choice = input("Enter your choice (1-8): ")
 
     if choice == '1':
         password = input("Enter Your Password :")
@@ -658,10 +713,12 @@ while True:
     elif choice == '4':
         scam_detector()
     elif choice == '5':
-        security_report() 
+        security_report()
     elif choice == '6':
-        export_report()
+        dashboard() 
     elif choice == '7':
+        export_report()
+    elif choice == '8':
         print("Thank you for using CyberGuard AI. Goodbye!")
         print("===========================================")
         break
