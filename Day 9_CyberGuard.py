@@ -364,6 +364,88 @@ def scam_detector():
     print("\n==============================================")   
     scam_done = True
 
+file_result = "Not Checked"
+file_score = 0
+file_done = False
+
+def file_scanner():
+    global file_result
+    global file_score
+    global file_done
+
+    file_name = input("Enter the file name : ")
+
+    print("\n")
+    print("=" * 55)
+    print("            FILE SCANNER REPORT")
+    print("=" * 55)
+
+    if "." in file_name:
+        extension = "." + file_name.split(".")[-1].lower()
+    else:
+        extension = "Unknown"
+
+    high_risk = [".exe", ".bat", ".cmd", ".js", ".vbs", ".scr", ".pif", ".com", ".jar"]
+    medium_risk = [".zip", ".rar", ".7z", ".tar", ".gz", ".iso", ".dmg"]
+    safe_risk = [".txt", ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".mp4", 
+                 ".avi", ".mkv",".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf"]
+
+    print("File Name :", file_name)
+    print("Extension :", extension)
+
+    if extension in high_risk:
+        print("Risk Level : HIGH RISK")
+        file_result = "HIGH RISK"
+        file_score = 0
+
+    elif extension in medium_risk:
+        print("Risk Level : MEDIUM RISK")
+        file_result = "MEDIUM RISK"
+        file_score = 15
+
+    elif extension in safe_risk:
+        print("Risk Level : SAFE")
+        file_result = "SAFE"
+        file_score = 25
+
+    else:
+        print("Risk Level : UNKNOWN")
+        file_result = "UNKNOWN"
+        file_score = 5
+
+    print("\n"+ "-" * 50)
+    print("File scanning in progress...")
+    print("Risk level       :", file_result)
+    print(" Security Score  :", file_score, "/100")
+
+    print("\n========== AI SECURITY RECOMMENDATIONS ==========")
+
+    if file_result == "HIGH RISK":
+        print("- Executable file detected.")
+        print("- Open only if the source is trusted.")
+        print("- Scan the file using an antivirus.")
+        print("- Avoid running unknown executable files.")
+
+    elif file_result == "MEDIUM RISK":
+        print("- Compressed archive detected.")
+        print("- Scan before extracting.")
+        print("- Verify the sender before opening.")
+
+    elif file_result == "SAFE":
+        print("- File extension appears safe.")
+        print("- Continue only if downloaded from a trusted source.")
+
+    else:
+        print("- Unknown file extension.")
+        print("- Be careful before opening this file.")
+
+    # Placeholder for file scanning logic
+    print("\nFile scanned successfully.")
+
+    file_result = "SAFE"
+    file_score = 25
+    file_done = True
+
 def security_report():
      current_time = datetime.now()
      score = 0
@@ -384,47 +466,41 @@ def security_report():
      print(f"URl analysis      :{url_result}")
      print(f"Email analysis    :{email_result}")
      print(f"scam detector     :{scam_result}")
+     print(f"File scanner      :{file_result}")
 
      print("="*55)
 
-     total_score = (password_score + url_score + email_score + scam_score)
+     total_score = (password_score + url_score + email_score + scam_score + file_score)
+     percentage = (total_score / 125) * 100
 
-     if total_score >= 90:
-         level = "EXCELLENT"
-     elif total_score >= 70:
-          level = "GOOD"
-     elif total_score >= 50:
-          level = "AVERAGE"
-     else:
-          level = "POOR"
- 
      if scam_result == "SAFE":
       score += 25
 
-     if score >= 80:
-        print("Security Level : EXCELLENT")
-
-     elif score >= 60:
-        print("Security Level : GOOD")
-
-     elif score >= 40:
-        print("Security Level : AVERAGE")
+     if total_score >= 100:
+        level = "EXCELLENT"
+     elif total_score >= 75:
+        level = "GOOD"
+     elif total_score >= 50:
+        level = "AVERAGE"
      else:
-        print("security level : CRITICAL ")
-           
+        level = "CRITICAL"
+
+     print(f"Security Level : {level}")    
 
      print("-"*55)
-     print("Over all security score:",total_score,"/100")
+     print(f"Overall security score: {total_score}/125")
+     print(f"Security Percentage   : {percentage:.1f}%")
      print("Security level         :",level)
      print("-"*55)
 
     # scan summary 
-     print("\n=========== SCAN SUMMARY ========")
+     print("\n=========== SCAN SUMMARY ===========")
 
      print(password_result)
      print(url_result)
      print(email_result)
      print(scam_result)
+     print(file_result)
 
      completed = 0
 
@@ -436,10 +512,12 @@ def security_report():
         completed += 1
      if scam_done:
         completed += 1
+     if file_done:
+        completed += 1
 
-     print(f"\n Completed scans :{completed}/4")
+     print(f"\n Completed scans :{completed}/5")
 
-     if completed == 4:
+     if completed == 5:
          print("Status : Full security scan completed")
      elif completed >=2:
          print("Status : Partical security scan")
@@ -449,7 +527,7 @@ def security_report():
     # create AI Security recommendations 
      print("\n======== AI SECURITY RECOMMENDATIONS ======== ")
 
-     if completed != 4:
+     if completed != 5:
          print("\n- Run all modules for accurate security analysis...!")
 
      # AI Recommendations
@@ -478,7 +556,7 @@ def security_report():
 
      if email_result == "SUSPICIOUS":
         print("- Verify the sender before clicking links.")
-     elif email_result == "SAFE":
+     elif email_result == "VALID":
         print("- Email appears safe.")
      else:
         print("- Email analysis has not been performed.")
@@ -487,10 +565,23 @@ def security_report():
 
      if scam_result == "SCAM":
         print("- Possible scam detected. Avoid sharing OTP or bank details.")
-     elif scam_result == "SAFE":
+     elif scam_result == "LOW RISK":
         print("- No scam indicators detected.")
      else:
         print("- Scam detector has not been used.")
+
+     print()
+
+     if file_result == "HIGH RISK":
+        print("- Avoid opening unknown executable files.")
+     elif file_result == "MEDIUM RISK":
+        print("- Scan compressed files before extracting.")
+     elif file_result == "SAFE":
+        print("- File appears safe.")
+     else:
+        print("- File scanner has not been used.")
+
+     print()
 
      print("\n============= FINAL AI VERDICT =============")
 
@@ -506,17 +597,17 @@ def security_report():
      else:
         print("Warning! Your device may be vulnerable to cyber threats.")
 
-     if completed == 4:
+     if completed == 5:
         print("\nAll security modules have been analyzed successfully.")
 
      else:
-        print(f"Only {completed}/4 modules were analyzed.")
+        print(f"Only {completed}/5 modules were analyzed.")
         print("Run the remaining modules for a complete security report.")
 
-     print("\n" + "=" * 60)
+     print("\n" + "=" * 55)
      print("        Thank you for using CyberGuard AI")
      print("             Stay Safe. Stay Secure.")
-     print("=" * 60)
+     print("=" * 55)
 
 
 # create export report 
@@ -525,20 +616,22 @@ def export_report():
     global url_result
     global email_result
     global scam_result
+    global file_result
 
     global password_score
     global url_score
     global email_score
     global scam_score
+    global file_score
 
     if (password_result == "Not Checked" and url_result == "Not Checked"
-    and email_result == "Not Checked" and scam_result == "Not Checked"):
+    and email_result == "Not Checked" and scam_result == "Not Checked" and file_result == "Not Checked"):
 
         print("\n - No analysis found.")
         print(" - Please run at least one analyzer before exporting the report.")
         return
 
-    total_score = password_score + url_score + email_score + scam_score
+    total_score = password_score + url_score + email_score + scam_score + file_score
 
     from datetime import datetime
 
@@ -549,9 +642,9 @@ def export_report():
 
     file = open("CyberGuard_Report.txt", "a")
 
-    file.write("\n"+"="*40 + "\n")
-    file.write("CYBERGUARD AI SECURITY REPORT\n")
-    file.write("="*40 + "\n")
+    file.write("\n"+"="*55 + "\n")
+    file.write("          CYBERGUARD AI SECURITY REPORT\n")
+    file.write("="*55 + "\n")
 
     file.write(f"Date : {date}\n")
     file.write(f"Time : {time}\n\n")
@@ -559,8 +652,9 @@ def export_report():
     file.write(f"Password Analysis : {password_result}\n")
     file.write(f"URL Analysis      : {url_result}\n")
     file.write(f"Email Analysis    : {email_result}\n")
-    file.write(f"Scam Detector     : {scam_result}\n\n")
-    file.write(f"Overall Score : {total_score}/100\n")
+    file.write(f"Scam Detector     : {scam_result}\n")
+    file.write(f"File Scanner      : {file_result}\n\n")
+    file.write(f"Overall Score : {total_score}/125\n")
 
     if total_score >= 90:
         level = "EXCELLENT"
@@ -574,7 +668,7 @@ def export_report():
     file.write(f"Security Level : {level}\n")
 
     file.write("\n"and"=" * 55 + "\n")
-    file.write("        AI SECURITY RECOMMENDATIONS\n")
+    file.write("         AI SECURITY RECOMMENDATIONS\n")
     file.write("=" * 55 + "\n\n")
 
     # password recommendation
@@ -599,19 +693,29 @@ def export_report():
     if email_result == "SUSPICIOUS":
         file.write("- Verify sender before opening attachments.\n\n")
 
-    elif email_result == "SAFE":
+    elif email_result == "VALID":
         file.write("- Email appears safe.\n\n")
 
     # scam recommendation
     if scam_result == "SCAM":
         file.write("- Never share OTP, passwords or banking details.\n\n")
 
-    elif scam_result == "SAFE":
+    elif scam_result == "LOW RISK":
         file.write("- No scam indicators detected.\n\n")
 
-    file.write("=" * 40 + "\n")
-    file.write("        FINAL AI VERDICT\n")
-    file.write("=" * 40 + "\n")
+    #file recommendation
+    if file_result == "HIGH RISK":
+        file.write("- Avoid opening unknown executable files.\n\n")
+
+    elif file_result == "MEDIUM RISK":
+        file.write("- Scan compressed files before extracting.\n\n")
+
+    elif file_result == "SAFE":
+        file.write("- File appears safe.\n\n")
+
+    file.write("=" * 55+ "\n")
+    file.write("                FINAL AI VERDICT\n")
+    file.write("=" * 55 + "\n")
 
     if total_score >= 90:
         file.write("---Your device appears highly secure---\n")
@@ -624,7 +728,7 @@ def export_report():
 
     else:
         file.write("---Warning! Your device may be vulnerable to cyber threats---\n")
-    file.write("=" * 60 + "\n\n")
+    file.write("=" * 55 + "\n\n")
 
     file.close()
     print("\n"+"="*55)
@@ -651,10 +755,12 @@ def dashboard ():
     print(f"URL Status      : {status_icon(url_result)} {url_result}")
     print(f"Email Status    : {status_icon(email_result)} {email_result}")
     print(f"Scam Status     : {status_icon(scam_result)} {scam_result}")
-
+    print(f"File Status     : {status_icon(file_result)} {file_result}")
     print("-" * 50)
 
-    total_score = password_score + url_score + email_score + scam_score
+    total_score = password_score + url_score + email_score + scam_score +file_score
+    percentage = (total_score / 125) * 100
+
 
     if total_score >= 90:
         level = "EXCELLENT"
@@ -665,8 +771,9 @@ def dashboard ():
     else:
         level = "POOR"
 
-    print(f"Overall Score   : {total_score}/100")
-    print(f"Security Level  : {level}")
+    print(f"Overall Score        : {total_score}/125")
+    print(f"Security Percentage  : {percentage:.1f}%")
+    print(f"Security Level       : {level}")
     print("-"*50)
 
     from datetime import datetime
@@ -683,8 +790,10 @@ def dashboard ():
         completed += 1
     if scam_result != "Not Checked":
         completed += 1
+    if file_result != "Not Checked":
+        completed += 1
 
-    print(f"Completed Scans : {completed}/4")
+    print(f"Completed Scans : {completed}/5")
     print(f"Last Scan       : {current_time.strftime('%d-%m-%Y %I:%M %p')}")
     print("-"*50)
 
@@ -696,12 +805,13 @@ while True:
     print("     2. URL analyzer")
     print("     3. Email Analyzer")
     print("     4. Scam Detector")
-    print("     5. Security report")
-    print("     6. Dashboard")
-    print("     7. Export report")
-    print("     8. Exit")
+    print("     5. File Scanner")
+    print("     6. Security report")
+    print("     7. Dashboard")
+    print("     8. Export report")
+    print("     9. Exit")
     print("===============================================")
-    choice = input("Enter your choice (1-8): ")
+    choice = input("Enter your choice (1-9): ")
 
     if choice == '1':
         password = input("Enter Your Password :")
@@ -713,12 +823,14 @@ while True:
     elif choice == '4':
         scam_detector()
     elif choice == '5':
-        security_report()
+        file_scanner()
     elif choice == '6':
-        dashboard() 
+        security_report()
     elif choice == '7':
-        export_report()
+        dashboard()
     elif choice == '8':
+        export_report()
+    elif choice == '9':
         print("Thank you for using CyberGuard AI. Goodbye!")
         print("===========================================")
         break
