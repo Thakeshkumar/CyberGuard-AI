@@ -7,6 +7,7 @@ print("          CyberGuard AI           ")
 print("=======================================")
 
 from datetime import datetime
+import os
 
 # Function to analyze password strength
 password_result = "Not Checked"
@@ -373,12 +374,21 @@ def file_scanner():
     global file_score
     global file_done
 
-    file_name = input("Enter the file name : ")
+    file_path = input("Enter the file path : ")
+
+    print("\n"+"=" * 55)
+    print("          FILE CONTENT ANALYSIS")
+    print("=" * 55)
+
+    print("File name :", file_path)
+    print("File Size :", len(file_path), "characters")
 
     print("\n")
     print("=" * 55)
     print("            FILE SCANNER REPORT")
     print("=" * 55)
+
+    file_name = file_path.split("/")[-1]  # Extract file name from path
 
     if "." in file_name:
         extension = "." + file_name.split(".")[-1].lower()
@@ -413,12 +423,100 @@ def file_scanner():
         file_result = "UNKNOWN"
         file_score = 5
 
-    print("\n"+ "-" * 50)
+    print("\n"+ "-" * 55)
     print("File scanning in progress...")
     print("Risk level       :", file_result)
-    print(" Security Score  :", file_score, "/100")
+    print("Security Score  :", file_score, "/100")
 
-    print("\n========== AI SECURITY RECOMMENDATIONS ==========")
+    file_name = file_path.split("/")[-1]  # Extract file name from path
+
+    content = ""
+    found = []
+    try:
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
+            content = file.read().lower()
+
+        print("\n=================== CONTENT ANALYSIS ===================")
+
+        suspicious_words = [
+        "http://","https://",
+        "password","login", "otp","bitcoin","wallet","hack",
+        "virus",".exe"]
+
+        found = []
+
+        for word in suspicious_words:
+            if word in content:
+                found.append(word)
+
+        if found:
+            print("Suspicious keywords found:")
+        for i in found:
+            print("-", i)
+        else:
+            print("No suspicious keywords found.")
+    except:
+        print("\n⚠ Content analysis skipped (Binary/Unreadable file).")
+        found = []
+
+    print("\n============= DANGEROUS CONTENT ANALYSIS =============")
+
+    dangerous_keywords = ["password",
+    "login","otp","bank","credit card","bitcoin","wallet","hack","virus","malware",
+    "trojan","ransomware","keylogger","cmd.exe","powershell","http://","https://"]
+
+    found_keywords = []
+
+    for keyword in dangerous_keywords:
+        if keyword in content:
+            found_keywords.append(keyword)  
+
+    if found_keywords:
+        print("⚠ Suspicious Content Found!")
+
+    for keyword in found_keywords:
+        print(" -", keyword)
+
+    file_score -= 5 * len(found_keywords)
+
+    if file_score < 0:
+        file_score = 0
+
+    else:
+        print("✅ No Suspicious Content Found.") 
+
+    content_score = 25
+
+    if len(found_keywords) == 0:
+        content_score = 25
+    elif len(found_keywords) <= 2:
+        content_score = 15
+    elif len(found_keywords) <= 5:
+        content_score = 10
+    else:
+        content_score = 0 
+
+    final_file_score = (file_score + content_score) // 2
+
+    print("\n================ FINAL FILE ANALYSIS ================")
+    print("Extension Score :", file_score, "/25")
+    print("Content Score   :", content_score, "/25")
+    print("Final Score     :", final_file_score, "/25")
+
+    if final_file_score >= 22:
+        verdict = "SAFE"
+    elif final_file_score >= 15:
+        verdict = "LOW RISK"
+    elif final_file_score >= 8:
+        verdict = "MEDIUM RISK"
+    else:
+        verdict = "HIGH RISK"
+    print("AI Verdict      :", verdict)
+
+    file_result = verdict
+    file_score = final_file_score
+
+    print("\n============= AI SECURITY RECOMMENDATIONS =============")
 
     if file_result == "HIGH RISK":
         print("- Executable file detected.")
@@ -442,8 +540,6 @@ def file_scanner():
     # Placeholder for file scanning logic
     print("\nFile scanned successfully.")
 
-    file_result = "SAFE"
-    file_score = 25
     file_done = True
 
 def security_report():
@@ -800,7 +896,7 @@ def dashboard ():
 # menu for the user to select the desired functionality
 while True:
     print("\nSelect an option:")
-    print("="*50)
+    print("="*55)
     print("     1. Password Analyzer")
     print("     2. URL analyzer")
     print("     3. Email Analyzer")
@@ -810,7 +906,7 @@ while True:
     print("     7. Dashboard")
     print("     8. Export report")
     print("     9. Exit")
-    print("===============================================")
+    print("="*55)
     choice = input("Enter your choice (1-9): ")
 
     if choice == '1':
@@ -832,7 +928,7 @@ while True:
         export_report()
     elif choice == '9':
         print("Thank you for using CyberGuard AI. Goodbye!")
-        print("===========================================")
+        print("=" * 55)
         break
     else:
         print("Invalid choice. Please try again.")
