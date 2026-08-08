@@ -1,13 +1,42 @@
 import customtkinter as ctk
 from pages.dashboard import dashboard_page
+from pages.Ai_chat import ai_chat_page
+from pages.voice_companion import voice_companion_page
+from pages.url_scanner import url_scanner_page
+from pages.password import password_page
+from pages.email_analyzer import email_analyzer_page
+from pages.file_analyzer import file_analyzer_page
+from pages.scam_detector import scam_detector_page
+from pages.reports import reports_page
+from pages.history import history_page
+from pages.settings import settings_page
 
-ctk.set_appearance_mode("Dark")
-ctk.set_default_color_theme("blue")
+# =========================
+# CYBERGUARD AI THEME
+# =========================
+
+BG_COLOR = "#F7F2E8"
+SIDEBAR_COLOR = "#FBF8F2"
+CARD_COLOR = "#FFFDF9"
+BORDER_COLOR = "#D8CFC2"
+
+TEXT_COLOR = "#3E332B"
+SECONDARY_TEXT = "#75685D"
+
+ACCENT_COLOR = "#8B5E3C"
+ACCENT_LIGHT = "#E8D8C8"
+
+SUCCESS_COLOR = "#5A9B7A"
+DANGER_COLOR = "#B85C5C"
+
+ctk.set_appearance_mode("Light")
+
 
 app = ctk.CTk()
 app.title("CyberGuard AI")
 app.geometry("1500x850")
-app.configure(fg_color="#976730")
+app.configure(bg=BG_COLOR)
+
 
 # ---------------- Sidebar ----------------
 sidebar = ctk.CTkFrame(
@@ -24,269 +53,219 @@ main = ctk.CTkScrollableFrame(
     fg_color="#D3BB8E",
     corner_radius=0
 )
+main.pack(
+    side="left",
+    fill="both",
+    expand=True,
+    
+)
+
 dashboard = dashboard_page(main)
 main.pack(side="right", fill="both", expand=True)
 
-# ---------------- Logo ----------------
+sidebar = ctk.CTkFrame(
+    app,
+    width=240,
+    corner_radius=0,
+    fg_color="#D3BB8E"
+)
+
+sidebar.pack(
+    side="left",
+    fill="y",
+    
+)
+sidebar.pack_propagate(False)
+# ================= SIDEBAR LOGO =================
 logo = ctk.CTkLabel(
     sidebar,
     text="🛡 CyberGuard AI",
-    font=("Segoe UI", 26, "bold"),
-    text_color="#976730"
+    font=("Segoe UI", 22, "bold"),
+    text_color="#FFFFFF"
 )
-logo.pack(pady=(30, 20))
 
-# ---------------- Menu ----------------
-menus = [
-    "Dashboard",
-    "AI Chat",
-    "Voice Companion",
-    "URL Scanner",
-    "Password Analyzer",
-    "Scam Detector",
-    "File Analyzer",
-    "Email Analyzer",
-    "Reports",
-    "Settings"
-]
-
-for item in menus:
-    btn = ctk.CTkButton(
-        sidebar,
-        text=item,
-        width=240,
-        height=45,
-        corner_radius=10
-    )
-    btn.pack(pady=6)
-
-# ---------------- Welcome ----------------
-title = ctk.CTkLabel(
-    main,
-    text="Welcome to CyberGuard AI",
-    font=("Segoe UI", 34, "bold"),
-    text_color="#976730"
+logo.pack(
+    pady=(28, 25),
+    padx=15
 )
-title.pack(pady=50)
 
-# ===================== TOP HEADER =====================
-
-header = ctk.CTkFrame(
-    main,
-    height=90,
-    fg_color="#663D27",
-    corner_radius=15
-)
-header.pack(fill="x", padx=20, pady=20)
-header.pack_propagate(False)
-
-# Left Side
-left_frame = ctk.CTkFrame(header, fg_color="transparent")
-left_frame.pack(side="left", padx=20)
-
-title = ctk.CTkLabel(
-    left_frame,
-    text="👋 Hi Thakesh!",
-    font=("Segoe UI", 24, "bold"),
-    text_color="White"
-)
-title.pack(anchor="w")
-
-subtitle = ctk.CTkLabel(
-    left_frame,
-    text="Your Personal AI Cyber Security Companion",
-    font=("Segoe UI", 13),
-    text_color="#181615"
-)
-subtitle.pack(anchor="w")
-
-# Right Side
-right_frame = ctk.CTkFrame(header, fg_color="transparent")
-right_frame.pack(side="right", padx=20)
-
-notify = ctk.CTkButton(
-    right_frame,
-    text="🔔",
-    width=45,
+dashboard_btn = ctk.CTkButton(
+    sidebar,
+    text="⌂  Dashboard",
     height=45,
-    corner_radius=12
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(dashboard_page)
 )
-notify.pack(side="left", padx=10)
 
-profile = ctk.CTkButton(
-    right_frame,
-    text="👤 Thakesh",
-    width=130,
+dashboard_btn.pack(
+    padx=15,
+    pady=5,
+    fill="x"
+)
+
+ai_chat_btn = ctk.CTkButton(
+    sidebar,
+    text="🤖  AI Chat",
     height=45,
-    corner_radius=12
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(ai_chat_page)
 )
-profile.pack(side="left")
 
-# ===================== DASHBOARD CARDS =====================
-
-cards_frame = ctk.CTkFrame(
-    main,
-    fg_color="transparent"
+ai_chat_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
 )
-cards_frame.pack(fill="x", padx=20, pady=10)
 
-card_titles = [
-    ("🛡 Security Score", "95%"),
-    ("📊 Total Scans", "0"),
-    ("⚠ Threats Found", "0"),
-    ("✅ Safe Files", "0")
-]
-
-for title, value in card_titles:
-
-    card = ctk.CTkFrame(
-        cards_frame,
-        width=250,
-        height=140,
-        corner_radius=18,
-        fg_color="#6E4021"
-    )
-
-    card.pack(side="left", padx=10)
-    card.pack_propagate(False)
-
-    lbl1 = ctk.CTkLabel(
-        card,
-        text=title,
-        font=("Segoe UI",16,"bold")
-    )
-
-    lbl1.pack(pady=(25,10))
-
-    lbl2 = ctk.CTkLabel(
-        card,
-        text=value,
-        font=("Segoe UI",28,"bold"),
-        text_color="#DFBC88"
-    )
-
-    lbl2.pack()
-
-# ---------------- Quick Actions ----------------
-quick_frame = ctk.CTkFrame(
-    main,
-    fg_color="#4D3221",
-    corner_radius=15
+voice_btn = ctk.CTkButton(
+    sidebar,
+    text="🎤  Voice Companion",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(voice_companion_page)
 )
-quick_frame.pack(fill="x", padx=20, pady=15)
 
-quick_title = ctk.CTkLabel(
-    quick_frame,
-    text="Quick Actions",
-    font=("Segoe UI", 20, "bold")
+voice_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
 )
-quick_title.pack(anchor="w", padx=20, pady=(15, 10))
 
-buttons_frame = ctk.CTkFrame(
-    quick_frame,
-    fg_color="transparent"
+url_btn = ctk.CTkButton(
+    sidebar,
+    text="🌐  URL Scanner",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(url_scanner_page)
 )
-buttons_frame.pack(padx=20, pady=(0,20))
 
-btn1 = ctk.CTkButton(buttons_frame, text="🌐 Scan URL", width=180, height=55)
-btn2 = ctk.CTkButton(buttons_frame, text="🔒 Password", width=180, height=55)
-btn3 = ctk.CTkButton(buttons_frame, text="📄 Scan File", width=180, height=55)
-btn4 = ctk.CTkButton(buttons_frame, text="⚠ Detect Scam", width=180, height=55)
-
-btn1.grid(row=0, column=0, padx=10, pady=10)
-btn2.grid(row=0, column=1, padx=10, pady=10)
-btn3.grid(row=1, column=0, padx=10, pady=10)
-btn4.grid(row=1, column=1, padx=10, pady=10)
-
-# ---------------- AI Voice Companion ----------------
-
-voice_frame = ctk.CTkFrame(
-    main,
-    fg_color="#683B29",
-    corner_radius=15
+url_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
 )
-voice_frame.pack(fill="x", padx=20, pady=15)
 
-voice_title = ctk.CTkLabel(
-    voice_frame,
-    text="AI Voice Companion",
-    font=("Segoe UI", 20, "bold")
+password_btn = ctk.CTkButton(
+    sidebar,
+    text="🔒  Password Analyzer",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(password_page)
 )
-voice_title.pack(anchor="w", padx=20, pady=(15,10))
 
-mic_label = ctk.CTkLabel(
-    voice_frame,
-    text="🎤",
-    font=("Segoe UI Emoji", 60)
+password_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
 )
-mic_label.pack(pady=(10,5))
 
-status_label = ctk.CTkLabel(
-    voice_frame,
-    text="Hey CyberGuard...\nI'm listening. How can I help?",
-    font=("Segoe UI",16),
-    justify="center"
+email_btn = ctk.CTkButton(
+    sidebar,
+    text="📧  Email Analyzer",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(email_analyzer_page)
 )
-status_label.pack(pady=(0,15))
 
-wave = ctk.CTkProgressBar(
-    voice_frame,
-    width=500
+email_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
 )
-wave.pack(pady=(0,20))
 
-wave.set(0.65)
-
-# ---------------- Recent Activity ----------------
-
-activity_frame = ctk.CTkFrame(
-    main,
-    fg_color="#351F16",
-    corner_radius=15
+file_btn = ctk.CTkButton(
+    sidebar,
+    text="📁  File Analyzer",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(file_analyzer_page)
 )
-activity_frame.pack(fill="x", padx=20, pady=15)
 
-activity_title = ctk.CTkLabel(
-    activity_frame,
-    text="Recent Activity",
-    font=("Segoe UI", 20, "bold")
+file_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
 )
-activity_title.pack(anchor="w", padx=20, pady=(15,10))
 
-activities = [
-    ("🌐", "Scanned URL : https://example.com", "SAFE"),
-    ("🔑", "Password Strength Checked", "STRONG"),
-    ("📄", "File Scanned : report.pdf", "SAFE"),
-    ("⚠", "Scam Message Detected", "THREAT")
-]
+scam_btn = ctk.CTkButton(
+    sidebar,
+    text="🚨  Scam Detector",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(scam_detector_page)
+)
 
-for icon, text, status in activities:
+scam_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
+)
 
-    row = ctk.CTkFrame(
-        activity_frame,
-        fg_color="transparent"
-    )
-    row.pack(fill="x", padx=20, pady=5)
+reports_btn = ctk.CTkButton(
+    sidebar,
+    text="📊  Reports",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(reports_page)
+)
 
-    ctk.CTkLabel(
-        row,
-        text=f"{icon}  {text}",
-        font=("Segoe UI",14)
-    ).pack(side="left")
+reports_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
+)
 
-    color = "#00FF88"
+history_btn = ctk.CTkButton(
+    sidebar,
+    text="📜  History",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(history_page)
+)
 
-    if status == "THREAT":
-        color = "#FF5555"
+history_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
+)
 
-    ctk.CTkLabel(
-        row,
-        text=status,
-        text_color=color,
-        font=("Segoe UI",14,"bold")
-    ).pack(side="right")
+settings_btn = ctk.CTkButton(
+    sidebar,
+    text="⚙  Settings",
+    height=45,
+    corner_radius=10,
+    anchor="w",
+    command=lambda: show_page(settings_page)
+)
+
+settings_btn.pack(
+    fill="x",
+    padx=15,
+    pady=5
+)
 
 
+current_page = None
+
+def show_page(page_function):
+    global current_page
+
+    if current_page is not None:
+        current_page.destroy()
+
+    current_page = page_function(main)
+
+show_page(dashboard_page)
 
 
 app.mainloop()
