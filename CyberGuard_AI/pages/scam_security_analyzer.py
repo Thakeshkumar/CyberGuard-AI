@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from datetime import datetime
 
-from services.email_analyzer import analyze_email
+from services.scam_detector import analyze_scam
 
 # =========================
 # CYBERGUARD AI THEME
@@ -53,17 +53,16 @@ def _make_card(parent, corner_radius=16):
     )
 
 
-def email_analyzer_page(parent):
-    """Modern CyberGuard AI Email Security Analyzer.
+def scam_detector_page(parent):
+    """Modern CyberGuard AI Scam Detector.
 
     Creates EXACTLY ONE page frame and returns it.
-    Works through show_page(email_analyzer_page).
+    Works through show_page(scam_detector_page).
     """
 
     page = ctk.CTkFrame(parent, fg_color="transparent")
     page.pack(fill="both", expand=True)
 
-    # Make the page scrollable content
     content = ctk.CTkFrame(page, fg_color="transparent")
     content.pack(fill="both", expand=True, padx=22, pady=18)
 
@@ -73,20 +72,20 @@ def email_analyzer_page(parent):
 
     ctk.CTkLabel(
         content,
-        text="📧  Email Security Analyzer",
+        text="🎣  Scam Detector",
         font=(FONT, 28, "bold"),
         text_color=TEXT_COLOR,
     ).pack(anchor="w")
 
     ctk.CTkLabel(
         content,
-        text="Analyze emails for suspicious content, links, sender information, and security indicators.",
+        text="Analyze messages, links, and suspicious requests for common scam indicators.",
         font=(FONT, 15),
         text_color=SECONDARY_TEXT,
     ).pack(anchor="w", pady=(4, 14))
 
     # =========================
-    # INPUT CARD
+    # MESSAGE INPUT CARD
     # =========================
 
     input_card = _make_card(content, corner_radius=18)
@@ -95,75 +94,14 @@ def email_analyzer_page(parent):
     input_inner = ctk.CTkFrame(input_card, fg_color="transparent")
     input_inner.pack(fill="x", padx=22, pady=20)
 
-    # Sender Email
     ctk.CTkLabel(
         input_inner,
-        text="Sender Email",
-        font=(FONT, 14, "bold"),
+        text="Paste Message or Suspicious Content",
+        font=(FONT, 15, "bold"),
         text_color=TEXT_COLOR,
     ).pack(anchor="w")
 
-    sender_entry = ctk.CTkEntry(
-        input_inner,
-        height=42,
-        corner_radius=10,
-        placeholder_text="sender@example.com",
-        fg_color="#FBF8F2",
-        border_color="#DED4C6",
-        text_color=TEXT_COLOR,
-        font=(FONT, 14),
-    )
-    sender_entry.pack(fill="x", pady=(6, 14))
-
-    # Recipient Email
-    ctk.CTkLabel(
-        input_inner,
-        text="Recipient Email",
-        font=(FONT, 14, "bold"),
-        text_color=TEXT_COLOR,
-    ).pack(anchor="w")
-
-    recipient_entry = ctk.CTkEntry(
-        input_inner,
-        height=48,
-        corner_radius=10,
-        placeholder_text="recipient@example.com",
-        fg_color="#FBF8F2",
-        border_color="#DED4C6",
-        text_color=TEXT_COLOR,
-        font=(FONT, 14),
-    )
-    recipient_entry.pack(fill="x", pady=(6, 14))
-
-    # Subject
-    ctk.CTkLabel(
-        input_inner,
-        text="Subject",
-        font=(FONT, 14, "bold"),
-        text_color=TEXT_COLOR,
-    ).pack(anchor="w")
-
-    subject_entry = ctk.CTkEntry(
-        input_inner,
-        height=48,
-        corner_radius=10,
-        placeholder_text="Enter email subject",
-        fg_color="#FBF8F2",
-        border_color="#DED4C6",
-        text_color=TEXT_COLOR,
-        font=(FONT, 14),
-    )
-    subject_entry.pack(fill="x", pady=(6, 14))
-
-    # Email Content
-    ctk.CTkLabel(
-        input_inner,
-        text="Email Content",
-        font=(FONT, 14, "bold"),
-        text_color=TEXT_COLOR,
-    ).pack(anchor="w")
-
-    body_textbox = ctk.CTkTextbox(
+    message_textbox = ctk.CTkTextbox(
         input_inner,
         height=220,
         corner_radius=12,
@@ -173,37 +111,16 @@ def email_analyzer_page(parent):
         text_color=TEXT_COLOR,
         font=(FONT, 13),
     )
-    body_textbox.pack(fill="x", pady=(6, 0))
-    body_textbox.insert("1.0", "Paste the email message here...")
-
-    # Headers (optional)
-    ctk.CTkLabel(
-        input_inner,
-        text="Email Headers (Optional)",
-        font=(FONT, 14, "bold"),
-        text_color=TEXT_COLOR,
-    ).pack(anchor="w", pady=(14, 0))
-
-    headers_textbox = ctk.CTkTextbox(
-        input_inner,
-        height=120,
-        corner_radius=12,
-        fg_color="#FBF8F2",
-        border_width=1,
-        border_color="#DED4C6",
-        text_color=TEXT_COLOR,
-        font=(FONT, 12),
+    message_textbox.pack(fill="x", pady=(10, 0))
+    message_textbox.insert(
+        "1.0",
+        "Paste an SMS, WhatsApp message, email text, payment request, or suspicious message here...",
     )
-    headers_textbox.pack(fill="x", pady=(6, 0))
-    headers_textbox.insert("1.0", "Paste raw email headers if available for additional analysis.")
 
     # Analyze button
-    btn_row = ctk.CTkFrame(input_inner, fg_color="transparent")
-    btn_row.pack(fill="x", pady=(16, 0))
-
     analyze_button = ctk.CTkButton(
-        btn_row,
-        text="🔍  Analyze Email",
+        input_inner,
+        text="🔍  Detect Scam",
         height=48,
         corner_radius=12,
         fg_color=ACCENT_COLOR,
@@ -211,12 +128,12 @@ def email_analyzer_page(parent):
         text_color="#FFFFFF",
         font=(FONT, 15, "bold"),
     )
-    analyze_button.pack(fill="x")
+    analyze_button.pack(fill="x", pady=(14, 0))
 
     # Privacy note
     ctk.CTkLabel(
         input_inner,
-        text="🔒  Email content is analyzed locally and is not uploaded.",
+        text="🔒  Analysis is performed locally. Your message is not uploaded.",
         font=(FONT, 12),
         text_color=SECONDARY_TEXT,
         anchor="w",
@@ -267,93 +184,78 @@ def email_analyzer_page(parent):
 
     loading_label = ctk.CTkLabel(
         result_inner,
-        text="Analyzing email...",
+        text="Analyzing...",
         font=(FONT, 14, "bold"),
         text_color=ACCENT_COLOR,
     )
 
-    # Scored layout: left (details + indicators) / right (score + verdict)
+    # =========================
+    # ANALYSIS SUMMARY (top strip)
+    # =========================
+
+    summary_frame = ctk.CTkFrame(result_inner, fg_color="#FBF8F2", corner_radius=12)
+    summary_frame.pack(fill="x", pady=(14, 0))
+
+    for col in range(5):
+        summary_frame.grid_columnconfigure(col, weight=1, uniform="sum")
+
+    summary_labels = {}
+
+    summary_items = [
+        ("Message Type", "message_type"),
+        ("Risk Level", "risk"),
+        ("Security Score", "score"),
+        ("Indicators", "indicators"),
+        ("Links", "links"),
+    ]
+
+    for idx, (label, key) in enumerate(summary_items):
+        box = ctk.CTkFrame(summary_frame, fg_color="transparent")
+        box.grid(row=0, column=idx, padx=10, pady=14, sticky="nsew")
+        ctk.CTkLabel(
+            box, text=label, font=(FONT, 11, "bold"), text_color=SECONDARY_TEXT, anchor="w"
+        ).pack(anchor="w")
+        summary_labels[key] = ctk.CTkLabel(
+            box, text="—", font=(FONT, 15, "bold"), text_color=TEXT_COLOR, anchor="w"
+        )
+        summary_labels[key].pack(anchor="w", pady=(4, 0))
+
+    # =========================
+    # MAIN RESULT: left (indicators + links) / right (score + verdict)
+    # =========================
+
     scored = ctk.CTkFrame(result_inner, fg_color="transparent")
+    scored.pack(fill="x", pady=(14, 0))
+
     scored.grid_columnconfigure(0, weight=1, uniform="res")
     scored.grid_columnconfigure(1, weight=1, uniform="res")
     scored.grid_rowconfigure(0, weight=1)
 
-    # -- Left panel --
+    # -- Left: indicators + links --
     left_panel = ctk.CTkFrame(scored, fg_color="transparent")
     left_panel.grid(row=0, column=0, padx=(0, 12), sticky="nsew")
 
-    # Email info details
-    details_frame = ctk.CTkFrame(left_panel, fg_color="transparent")
-    details_frame.pack(fill="x")
-
-    def _detail_row(frame, label, value_label, value_color=None):
-        row = ctk.CTkFrame(frame, fg_color="transparent")
-        row.pack(fill="x", pady=2)
-        ctk.CTkLabel(
-            row, text=label, font=(FONT, 13, "bold"), text_color=SECONDARY_TEXT,
-            width=100, anchor="w",
-        ).pack(side="left")
-        value_label.configure(text_color=value_color or TEXT_COLOR)
-        value_label.pack(side="left", fill="x", expand=True)
-
-    res_sender = ctk.CTkLabel(details_frame, text="—", font=(FONT, 13), text_color=TEXT_COLOR, anchor="w", wraplength=380, justify="left")
-    res_recipient = ctk.CTkLabel(details_frame, text="—", font=(FONT, 13), text_color=TEXT_COLOR, anchor="w", wraplength=380, justify="left")
-    res_subject = ctk.CTkLabel(details_frame, text="—", font=(FONT, 13), text_color=TEXT_COLOR, anchor="w", wraplength=380, justify="left")
-
-    _detail_row(details_frame, "From", res_sender)
-    _detail_row(details_frame, "To", res_recipient)
-    _detail_row(details_frame, "Subject", res_subject)
-
-    # Authentication results
-    auth_frame = ctk.CTkFrame(left_panel, fg_color="transparent")
-    auth_frame.pack(fill="x", pady=(10, 0))
-
-    auth_label = ctk.CTkLabel(
-        auth_frame, text="Authentication", font=(FONT, 15, "bold"), text_color=TEXT_COLOR,
-    )
-    auth_label.pack(anchor="w")
-
-    spf_label = ctk.CTkLabel(auth_frame, text="SPF: —", font=(FONT, 13, "bold"), text_color=SECONDARY_TEXT, anchor="w")
-    dkim_label = ctk.CTkLabel(auth_frame, text="DKIM: —", font=(FONT, 13, "bold"), text_color=SECONDARY_TEXT, anchor="w")
-    dmarc_label = ctk.CTkLabel(auth_frame, text="DMARC: —", font=(FONT, 13, "bold"), text_color=SECONDARY_TEXT, anchor="w")
-
-    spf_label.pack(anchor="w", pady=2)
-    dkim_label.pack(anchor="w", pady=2)
-    dmarc_label.pack(anchor="w", pady=2)
-
-    auth_note = ctk.CTkLabel(
-        auth_frame,
-        text="Email authentication information unavailable.",
-        font=(FONT, 12),
-        text_color=SECONDARY_TEXT,
-        anchor="w",
-    )
-    auth_note.pack(anchor="w", pady=4)
-
-    # Suspicious indicators
     ctk.CTkLabel(
         left_panel,
         text="⚠  Suspicious Indicators",
         font=(FONT, 15, "bold"),
         text_color=TEXT_COLOR,
-    ).pack(anchor="w", pady=(14, 0))
+    ).pack(anchor="w")
 
     indicators_frame = ctk.CTkFrame(left_panel, fg_color="transparent")
     indicators_frame.pack(fill="x", pady=(8, 0))
 
-    # Links found
+    ctk.CTkLabel(
+        left_panel,
+        text="🔗  Links Found",
+        font=(FONT, 15, "bold"),
+        text_color=TEXT_COLOR,
+    ).pack(anchor="w", pady=(14, 0))
+
     links_frame = ctk.CTkFrame(left_panel, fg_color="transparent")
-    links_frame.pack(fill="x", pady=(10, 0))
+    links_frame.pack(fill="x", pady=(8, 0))
 
-    links_label = ctk.CTkLabel(
-        links_frame, text="Links Found", font=(FONT, 15, "bold"), text_color=TEXT_COLOR,
-    )
-    links_label.pack(anchor="w")
-
-    links_detail = ctk.CTkFrame(links_frame, fg_color="transparent")
-    links_detail.pack(fill="x", pady=(6, 0))
-
-    # -- Right panel: score + verdict --
+    # -- Right: score + verdict + recommendation --
     right_panel = ctk.CTkFrame(scored, fg_color="#FBF8F2", corner_radius=14)
     right_panel.grid(row=0, column=1, padx=(12, 0), sticky="nsew")
 
@@ -388,7 +290,7 @@ def email_analyzer_page(parent):
 
     ctk.CTkLabel(
         right_inner,
-        text="🤖 AI Verdict",
+        text="🤖 AI Verdict (rule-based local analysis)",
         font=(FONT, 15, "bold"),
         text_color=TEXT_COLOR,
         anchor="w",
@@ -407,7 +309,7 @@ def email_analyzer_page(parent):
 
     ctk.CTkLabel(
         right_inner,
-        text="Security Recommendation",
+        text="🛡  Security Recommendation",
         font=(FONT, 15, "bold"),
         text_color=TEXT_COLOR,
         anchor="w",
@@ -425,7 +327,7 @@ def email_analyzer_page(parent):
     rec_label.pack(anchor="w", pady=(4, 0))
 
     # =========================
-    # RECENT EMAIL ANALYSES
+    # RECENT SCAM ANALYSES
     # =========================
 
     history_card = _make_card(content, corner_radius=18)
@@ -436,14 +338,14 @@ def email_analyzer_page(parent):
 
     ctk.CTkLabel(
         history_header,
-        text="Recent Email Analyses",
+        text="🕘  Recent Scam Analyses",
         font=(FONT, 17, "bold"),
         text_color=TEXT_COLOR,
     ).pack(side="left")
 
     ctk.CTkLabel(
         history_header,
-        text="(No content stored)",
+        text="(Message content is not stored)",
         font=(FONT, 12),
         text_color=SECONDARY_TEXT,
     ).pack(side="left", padx=(10, 0), pady=(4, 0))
@@ -466,7 +368,7 @@ def email_analyzer_page(parent):
     history_body = ctk.CTkFrame(history_card, fg_color="transparent")
     history_body.pack(fill="x", padx=20, pady=(0, 16))
 
-    # ---- History state (metadata only, no full content) ----
+    # ---- History state (metadata only, no message content) ----
     history = []
 
     history_rows = ctk.CTkFrame(history_body, fg_color="transparent")
@@ -491,13 +393,21 @@ def email_analyzer_page(parent):
 
             ctk.CTkLabel(
                 row,
-                text=entry["sender"],
+                text=entry["message_type"],
                 font=(FONT, 13),
                 text_color=TEXT_COLOR,
                 anchor="w",
-                wraplength=250,
-                justify="left",
-            ).pack(side="left", fill="x", expand=True)
+                width=180,
+            ).pack(side="left")
+
+            ctk.CTkLabel(
+                row,
+                text=f"{entry['indicator_count']} ind.",
+                font=(FONT, 12),
+                text_color=SECONDARY_TEXT,
+                width=60,
+                anchor="w",
+            ).pack(side="left", padx=(8, 0))
 
             ctk.CTkLabel(
                 row,
@@ -528,9 +438,15 @@ def email_analyzer_page(parent):
                 pady=3,
             ).pack(side="right", padx=(0, 10))
 
-    def _add_history(sender, risk, score):
+    def _add_history(message_type, risk, score, indicator_count):
         now = datetime.now().strftime("%I:%M %p")
-        history.insert(0, {"sender": sender, "time": now, "risk": risk, "score": score})
+        history.insert(0, {
+            "message_type": message_type,
+            "risk": risk,
+            "score": score,
+            "indicator_count": indicator_count,
+            "time": now,
+        })
         _render_history()
 
     def clear_history():
@@ -553,35 +469,12 @@ def email_analyzer_page(parent):
             fg_color=RISK_BG.get(risk, "#F0EBE2"),
         )
 
-        res_sender.configure(text=result["sender"] if result["sender"] else "(none)")
-        res_recipient.configure(text=result["recipient"] if result["recipient"] else "(none)")
-        res_subject.configure(text=result["subject"] if result["subject"] else "(none)")
-
-        # Authentication
-        auth = result["authentication"]
-        if auth["available"]:
-            auth_note.configure(text="Authentication data present.")
-            spf_label.configure(text=f"SPF: {auth['spf']}")
-            dkim_label.configure(text=f"DKIM: {auth['dkim']}")
-            dmarc_label.configure(text=f"DMARC: {auth['dmarc']}")
-
-            # Color code auth results
-            def _auth_color(val):
-                if val == "PASS":
-                    return SUCCESS_COLOR
-                elif val == "FAIL":
-                    return DANGER_COLOR
-                return SECONDARY_TEXT
-
-            spf_label.configure(text_color=_auth_color(auth["spf"]))
-            dkim_label.configure(text_color=_auth_color(auth["dkim"]))
-            dmarc_label.configure(text_color=_auth_color(auth["dmarc"]))
-            auth_note.configure(text="")
-        else:
-            spf_label.configure(text="SPF: —")
-            dkim_label.configure(text="DKIM: —")
-            dmarc_label.configure(text="DMARC: —")
-            auth_note.configure(text="Email authentication information unavailable.")
+        # Summary
+        summary_labels["message_type"].configure(text=result["message_type"])
+        summary_labels["risk"].configure(text=risk, text_color=risk_color)
+        summary_labels["score"].configure(text=f"{result['security_score']}/100", text_color=risk_color)
+        summary_labels["indicators"].configure(text=str(len(result["indicators"])))
+        summary_labels["links"].configure(text=str(len(result["links"])))
 
         # Suspicious indicators
         for child in indicators_frame.winfo_children():
@@ -591,16 +484,16 @@ def email_analyzer_page(parent):
         if not indicators:
             ctk.CTkLabel(
                 indicators_frame,
-                text="✅  No suspicious indicators detected.",
+                text="✅  No suspicious scam indicators detected",
                 font=(FONT, 13),
                 text_color=SUCCESS_COLOR,
                 anchor="w",
             ).pack(anchor="w", pady=2)
         else:
-            for ind in indicators[:10]:  # max 10 for display
+            for ind in indicators[:10]:
                 ctk.CTkLabel(
                     indicators_frame,
-                    text="•  " + ind,
+                    text="⚠  " + ind,
                     font=(FONT, 13),
                     text_color=TEXT_COLOR,
                     anchor="w",
@@ -617,14 +510,14 @@ def email_analyzer_page(parent):
                 ).pack(anchor="w", pady=2)
 
         # Links
-        for child in links_detail.winfo_children():
+        for child in links_frame.winfo_children():
             child.destroy()
 
         links = result["links"]
         if not links:
             ctk.CTkLabel(
-                links_detail,
-                text="No links found in email content.",
+                links_frame,
+                text="✅  No URLs detected",
                 font=(FONT, 13),
                 text_color=SECONDARY_TEXT,
                 anchor="w",
@@ -634,8 +527,8 @@ def email_analyzer_page(parent):
                 risk_text = link["risk"]
                 risk_c = RISK_COLORS.get(risk_text, SECONDARY_TEXT)
                 ctk.CTkLabel(
-                    links_detail,
-                    text=f"•  {link['url'][:80]}{'...' if len(link['url']) > 80 else ''}",
+                    links_frame,
+                    text=f"•  {link['url'][:60]}{'...' if len(link['url']) > 60 else ''}",
                     font=(FONT, 12),
                     text_color=TEXT_COLOR,
                     anchor="w",
@@ -643,7 +536,7 @@ def email_analyzer_page(parent):
                     justify="left",
                 ).pack(anchor="w", pady=2)
                 ctk.CTkLabel(
-                    links_detail,
+                    links_frame,
                     text=f"   Domain: {link['domain']}  |  HTTPS: {link['https']}  |  {risk_text}",
                     font=(FONT, 12),
                     text_color=risk_c or SECONDARY_TEXT,
@@ -651,7 +544,7 @@ def email_analyzer_page(parent):
                 ).pack(anchor="w", pady=(0, 4))
             if len(links) > 5:
                 ctk.CTkLabel(
-                    links_detail,
+                    links_frame,
                     text=f"  ... and {len(links) - 5} more links.",
                     font=(FONT, 12),
                     text_color=SECONDARY_TEXT,
@@ -668,42 +561,44 @@ def email_analyzer_page(parent):
         rec_label.configure(text=result["recommendation"])
 
         # Add to history (metadata only)
-        _add_history(result["sender"] or result["sender_domain"] or "(unknown)", risk, score)
+        _add_history(result["message_type"], risk, score, len(indicators))
 
     def _run_analysis():
         error_label.configure(text="")
 
-        sender = sender_entry.get().strip()
-        recipient = recipient_entry.get().strip()
-        subject = subject_entry.get().strip()
-        body = body_textbox.get("1.0", "end").strip()
+        message = message_textbox.get("1.0", "end").strip()
+        if message == "Paste an SMS, WhatsApp message, email text, payment request, or suspicious message here...":
+            message = ""
 
-        # Validate at least sender + content required
-        if not sender:
-            error_label.configure(text="⚠  Please enter a sender email address.")
-            return
-        if not body or body == "Paste the email message here...":
-            error_label.configure(text="⚠  Please enter email content to analyze.")
+        # Validate empty input
+        if not message:
+            error_label.configure(text="⚠  Please paste a message to analyze.")
             return
 
-        headers = headers_textbox.get("1.0", "end").strip()
-        if headers == "Paste raw email headers if available for additional analysis.":
-            headers = ""
+        # Reject excessively large input (> 20k chars) to prevent UI freeze
+        if len(message) > 20000:
+            error_label.configure(text="⚠  The message is too large to analyze (max 20,000 characters).")
+            return
 
         # Loading state
         loading_label.pack(anchor="w", pady=(16, 0))
         analyze_button.configure(state="disabled", text="Analyzing...")
 
         try:
-            result = analyze_email(sender, recipient, subject, body, headers)
+            result = analyze_scam(message)
+        except ValueError:
+            loading_label.pack_forget()
+            analyze_button.configure(state="normal", text="🔍  Detect Scam")
+            error_label.configure(text="⚠  Please paste a message to analyze.")
+            return
         except Exception:
             loading_label.pack_forget()
-            analyze_button.configure(state="normal", text="🔍  Analyze Email")
+            analyze_button.configure(state="normal", text="🔍  Detect Scam")
             error_label.configure(text="⚠  Unexpected error during analysis. Please try again.")
             return
 
         loading_label.pack_forget()
-        analyze_button.configure(state="normal", text="🔍  Analyze Email")
+        analyze_button.configure(state="normal", text="🔍  Detect Scam")
         result_card.pack(fill="x", pady=(12, 0))
         _render_result(result)
 

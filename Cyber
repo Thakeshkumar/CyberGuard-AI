@@ -1,0 +1,286 @@
+"""
+CyberGuard AI - Scam Detection Analyzer Service
+
+A clean, structured local heuristic scam detector.
+
+This builds on the project's existing scam_detector() keyword approach
+(Day 9_CyberGuard.py) and extends it with message-type classification and
+URL integration (reusing services/url_analyzer.py for link risk).
+
+SECURITY GUARANTEES:
+  - Local heuristic analysis only.
+  - NEVER uploads the message or sends it to external APIs.
+  - NEVER returns or stores the full message content.
+  - NEVER prints message content to the terminal.
+"""
+
+import re
+
+from services.url_analyzer import analyze_url
+
+# =========================
+# RISK LEVELS
+# =========================
+
+SAFE = "SAFE"
+LOW = "LOW"
+MEDIUM = "MEDIUM"
+HIGH = "HIGH"
+CRITICAL = "CRITICAL"
+
+# Message types
+NORMAL = "Normal Message"
+PROMOTIONAL = "Promotional Message"
+FINANCIAL = "Financial Message"
+DELIVERY = "Delivery Message"
+ACCOUNT_SECURITY = "Account/Security Message"
+JOB_INVESTMENT = "Job/Investment Message"
+POTENTIAL_SCAM = "Potential Scam"
+
+
+# =========================
+# HEURISTIC RULE GROUPS
+# =========================
+
+# OTP / credential / PIN requests
+OTP_KEYWORDS = [
+    "otp", "one-time password", "verification code", "pin", "verify your otp",
+]
+
+# Password / account credential requests
+PASSWORD_KEYWORDS = [
+    "password", "login credentials", "verify your password", "reset your password",
+]
+
+# Banking / card / UPI / payment info requests
+BANKING_KEYWORDS = [
+    "bank account", "banking details", "credit card", "debit card", "cvv",
+    "card number", "upi", "upi id", "atm pin", "payment details",
+]
+
+# Money transfer / payment requests
+PAYMENT_KEYWORDS = [
+    "payment", "pay now", "transfer money", "wire transfer", "send money",
+    "pay the", "payment required", "advance payment", "processing fee",
+]
+
+# Prize / reward / lottery claims
+PRIZE_KEYWORDS = [
+    "you won", "prize", "lottery", "reward", "gift card", "congratulations",
+    "claim your", "winner", "jackpot", "lucky draw",
+]
+
+# Account suspension / threats
+THREAT_KEYWORDS = [
+    "account will be suspended", "suspended", "account locked", "will be banned",
+    "will be closed", "deactivated", "terminated",
+]
+
+# Urgency language
+URGENCY_KEYWORDS = [
+    "urgent", "immediately", "asap", "act now", "within 24 hours",
+    "last warning", "final notice", "limited time", "act fast",
+]
+
+# Fear / threat language
+FEAR_KEYWORDS = [
+    "illegal activity", "legal action", "lawsuit", "investigation",
+    "police", "arrest", "fine", "penalty", "your account is at risk",
+]
+
+# Fake customer support / impersonation
+IMPERSONATION_KEYWORDS = [
+    "customer support", "help desk", "official team", "bank representative",
+    "we are from", "government official", "tax officer",
+]
+
+# Job / investment / crypto scams
+JOB_INVESTMENT_KEYWORDS = [
+    "work from home", "earn money", "investment", "crypto", "bitcoin",
+    "guaranteed returns", "risk-free", "double your money", "trading",
+]
+
+# Delivery / refund scams
+DELIVERY_KEYWORDS = [
+    "your package", "delivery failed", "track your package", "shipping",
+    "refund", "your order", "courier", "delivery service",
+]
+
+# Government impersonation
+GOVERNMENT_KEYWORDS = [
+    "tax refund", "government", "income tax", "gst", "pan card", "aadhaar",
+    "govt", "electricity bill", "water bill",
+]
+
+# Requests to click / download
+CLICK_DOWNLOAD_KEYWORDS = [
+    "click here", "click the link", "download", "open the attachment",
+    "enable macros", "update your app",
+]
+
+# Personal information requests
+PERSONAL_INFO_KEYWORDS = [
+    "social security", "personal information", "your dob", "your address",
+    "id proof", "aadhaar number", "pan number",
+]
+
+# Common indicators (metadata for history) — used for count
+ALL_GROUPS = [
+    ("OTP", OTP_KEYWORDS),
+    ("Password", PASSWORD_KEYWORDS),
+    ("Banking", BANKING_KEYWORDS),
+    ("Payment", PAYMENT_KEYWORDS),
+    ("Prize", PRIZE_KEYWORDS),
+    ("Threat", THREAT_KEYWORDS),
+    ("Urgency", URGENCY_KEYWORDS),
+    ("Fear", FEAR_KEYWORDS),
+    ("Impersonation", IMPERSONATION_KEYWORDS),
+    ("Job/Investment", JOB_INVESTMENT_KEYWORDS),
+    ("Delivery", DELIVERY_KEYWORDS),
+    ("Government", GOVERNMENT_KEYWORDS),
+    ("Click/Download", CLICK_DOWNLOAD_KEYWORDS),
+    ("Personal info", PERSONAL_INFO_KEYWORDS),
+]
+
+
+def _classify(score):
+    if score <= 20:
+        return SAFE
+    elif score <= 40:
+        return LOW
+    elif score <= 60:
+        return MEDIUM
+    elif score <= 80:
+        return HIGH
+    return CRITICAL
+
+
+def _extract_urls(message):
+    """Extract URLs from the message text."""
+    url_pattern = re.compile(r"https?://[^\s<>'\"\]]+")
+    return url_pattern.findall(message)
+
+
+def _detect_group(text_lower, keyword_list):
+    """Return the list of matched keywords for a group."""
+    return [kw for kw in keyword_list if kw in text_lower]
+
+
+def _classify_message_type(indicators, risk):
+    """Heuristically classify the message type (low confidence)."""
+    all_text = " ".join(indicators).lower()
+
+    if risk in (HIGH, CRITICAL):
+        return POTENTIAL_SCAM
+    if any(k in all_text for k in ["otp", "password", "account", "suspended", "verify"]):
+        return ACCOUNT_SECURITY
+    if any(k in all_text for k in ["payment", "bank", "upi", "transfer", "refund"]):
+        return FINANCIAL
+    if any(k in all_text for k in ["package", "delivery", "shipping", "courier"]):
+        return DELIVERY
+    if any(k in all_text for k in ["prize", "lottery", "won", "reward", "investment", "crypto"]):
+        return PROMOTIONAL
+    if any(k in all_text for k in ["work from home", "job", "earn money"]):
+        return JOB_INVESTMENT
+    return NORMAL
+
+
+def analyze_scam(message):
+    """
+    Analyze a message locally (heuristic) and return a structured result.
+
+    This is DEMO/heuristic analysis — it does NOT confirm a message is a scam
+    or guarantee it is safe. The full message is NEVER returned.
+    """
+    message = (message or "").strip() if isinstance(message, str) else ""
+
+    if not message:
+        raise ValueError("No message provided.")
+
+    text_lower = message.lower()
+    score = 0
+    indicators = []
+
+    # ---------- Detect indicators per group ----------
+    for group_name, keywords in ALL_GROUPS:
+        found = _detect_group(text_lower, keywords)
+        if found:
+            description = group_name
+            score += 15 if group_name in ("OTP", "Password", "Banking", "Payment", "Threat") else 10
+            indicators.append(f"{description} request detected: {found[0]}.")
+            if len(found) > 1:
+                indicators.append(f"Additional {group_name.lower()} keywords: {', '.join(found[1:3])}.")
+
+    # ---------- URL extraction + analysis (reuse URL analyzer) ----------
+    urls = _extract_urls(message)
+    link_details = []
+    suspicious_links = 0
+
+    for url in urls:
+        info = analyze_url(url)  # reuse existing URL analyzer
+        is_suspicious = info["risk"] in ("MEDIUM", "HIGH", "CRITICAL")
+        link_details.append({
+            "url": url,
+            "domain": info["domain"],
+            "scheme": info["scheme"],
+            "https": info["https_status"],
+            "risk": info["risk"],
+            "security_score": info["security_score"],
+        })
+        if is_suspicious:
+            suspicious_links += 1
+            indicators.append(f"Suspicious link detected: {url}")
+
+    if suspicious_links == 1:
+        score += 10
+    elif suspicious_links >= 2:
+        score += 20
+
+    # ---------- Combined risk boost (urgency + request) ----------
+    has_urgency = any(k in text_lower for k in URGENCY_KEYWORDS) or "urgent" in text_lower
+    has_request = any(k in text_lower for k in OTP_KEYWORDS + PASSWORD_KEYWORDS + BANKING_KEYWORDS + PAYMENT_KEYWORDS)
+    if has_urgency and has_request:
+        indicators.append("Possible social-engineering pattern (urgency + sensitive request).")
+        score += 15
+
+    # ---------- Clamp ----------
+    score = max(0, min(100, score))
+    risk = _classify(score)
+    security_score = 100 - score
+
+    message_type = _classify_message_type(indicators, risk)
+
+    # ---------- Verdict (rule-based, NOT a real AI model) ----------
+    if risk == SAFE:
+        verdict = "Rule-based local analysis found no significant scam indicators."
+    elif risk == LOW:
+        verdict = "Rule-based local analysis found a few minor indicators worth reviewing."
+    elif risk == MEDIUM:
+        verdict = "Rule-based local analysis detected several scam-related indicators. Verify the sender independently."
+    elif risk == HIGH:
+        verdict = "Multiple social-engineering indicators were detected. Verify the sender independently before taking any action."
+    else:
+        verdict = "Critical scam indicators detected. Do not respond, transfer money, or share any information."
+
+    # ---------- Recommendation (based on indicators) ----------
+    recommendations = []
+    if "OTP" in " ".join(indicators) or "otp" in text_lower:
+        recommendations.append("Never share OTPs, passwords, PINs, or banking details.")
+    if suspicious_links:
+        recommendations.append("Do not click suspicious links.")
+    if risk in (MEDIUM, HIGH, CRITICAL):
+        recommendations.append("Verify the sender using an official contact method.")
+        recommendations.append("Do not transfer money based only on an unexpected message.")
+        recommendations.append("Avoid downloading unknown attachments.")
+        recommendations.append("If the message claims to be from a company, visit its official website manually.")
+
+    return {
+        "message_type": message_type,
+        "risk_level": risk,
+        "security_score": security_score,
+        "indicators": indicators,
+        "links": link_details,
+        "verdict": verdict,
+        "recommendation": " ".join(recommendations) if recommendations else "No immediate action required. Be cautious with unexpected messages.",
+        "is_demo": True,
+    }

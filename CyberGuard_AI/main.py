@@ -38,7 +38,7 @@ app.geometry("1500x850")
 app.configure(bg=BG_COLOR)
 
 
-# ---------------- Sidebar ----------------
+# ---------------- Sidebar (EXACTLY ONE) ----------------
 sidebar = ctk.CTkFrame(
     app,
     width=240,
@@ -46,36 +46,8 @@ sidebar = ctk.CTkFrame(
     fg_color="#D3BB8E"
 )
 sidebar.pack(side="left", fill="y")
-
-# ---------------- Main Area ----------------
-main = ctk.CTkScrollableFrame(
-    app,
-    fg_color="#D3BB8E",
-    corner_radius=0
-)
-main.pack(
-    side="left",
-    fill="both",
-    expand=True,
-    
-)
-
-dashboard = dashboard_page(main)
-main.pack(side="right", fill="both", expand=True)
-
-sidebar = ctk.CTkFrame(
-    app,
-    width=240,
-    corner_radius=0,
-    fg_color="#D3BB8E"
-)
-
-sidebar.pack(
-    side="left",
-    fill="y",
-    
-)
 sidebar.pack_propagate(False)
+
 # ================= SIDEBAR LOGO =================
 logo = ctk.CTkLabel(
     sidebar,
@@ -255,6 +227,19 @@ settings_btn.pack(
 )
 
 
+# ---------------- Main Area (EXACTLY ONE) ----------------
+main = ctk.CTkScrollableFrame(
+    app,
+    fg_color=BG_COLOR,
+    corner_radius=0
+)
+main.pack(
+    side="left",
+    fill="both",
+    expand=True
+)
+
+
 current_page = None
 
 def show_page(page_function):
@@ -263,7 +248,10 @@ def show_page(page_function):
     if current_page is not None:
         current_page.destroy()
 
-    current_page = page_function(main)
+    if page_function is dashboard_page:
+        current_page = dashboard_page(main, on_navigate=show_page)
+    else:
+        current_page = page_function(main)
 
 show_page(dashboard_page)
 
