@@ -1,0 +1,15 @@
+[
+    {
+        "id": "20260813202845931587",
+        "scan_type": "Password Analyzer",
+        "target": "Password Analysis (password not stored)",
+        "score": 92,
+        "risk": "SAFE",
+        "verdict": "Password strength: VERY STRONG. Security score: 92/100.",
+        "recommendation": "Great job! Keep using unique passwords for every account.\nEnable two-factor authentication (2FA) wherever possible.",
+        "date_time": "13-08-2026 08:28 PM",
+        "extra": {
+            "findings": []
+        }
+    }
+]

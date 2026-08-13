@@ -1,0 +1,15 @@
+[
+    {
+        "id": "20260813160254762887",
+        "scan_type": "Scam Detector",
+        "target": "Scam Message Analysis",
+        "date_time": "2026-08-13 04:02:54 PM",
+        "risk": "SAFE",
+        "score": 100,
+        "verdict": "No major scam indicators detected. Still verify unexpected messages independently.",
+        "recommendation": "",
+        "findings": [
+            "No significant suspicious patterns were detected."
+        ]
+    }
+]

@@ -1,0 +1,14 @@
+{
+    "scan_type": "Scam Detector",
+    "target": "iuewij  seoih  iwekjfoihiwEJR HOSEIFH",
+    "score": 100,
+    "risk": "SAFE",
+    "verdict": "No significant scam indicators were detected.",
+    "recommendation": "No major scam indicators detected. Still verify unexpected messages independently.",
+    "date_time": "13-08-2026 07:08 PM",
+    "extra": {
+        "reasons": [
+            "No significant suspicious patterns were detected."
+        ]
+    }
+}
